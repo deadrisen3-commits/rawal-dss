@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard · Rawal DSS</title>
+    <meta name="description" content="Interactive analytical dashboard for Rawal Dam reservoir sustainability. 25 years of hydrology, climate, and urban sprawl data.">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Core stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Plotly.js from CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 </head>
 <body>
     <header class="top-bar">
@@ -26,14 +34,148 @@
             <a href="about.html" class="nav-link">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>Dashboard</h1>
-            <p>This page will be populated in Phase 3 with interactive historical analytics.</p>
-        </div>
-    </main>
+
+    <div class="dashboard-layout">
+        <!-- LEFT SIDEBAR with tab buttons -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-section">
+                <p class="sidebar-label">ANALYTICS MODULES</p>
+                <button class="tab-button active" data-tab="hydrology">
+                    <span class="tab-icon">💧</span>
+                    <span class="tab-text">Hydrology</span>
+                </button>
+                <button class="tab-button" data-tab="climate">
+                    <span class="tab-icon">🌡️</span>
+                    <span class="tab-text">Climate</span>
+                </button>
+                <button class="tab-button" data-tab="sprawl">
+                    <span class="tab-icon">🏗️</span>
+                    <span class="tab-text">Urban Sprawl</span>
+                </button>
+                <button class="tab-button" data-tab="forecast">
+                    <span class="tab-icon">📉</span>
+                    <span class="tab-text">EOL Forecast</span>
+                </button>
+                <button class="tab-button" data-tab="spatial">
+                    <span class="tab-icon">🗺️</span>
+                    <span class="tab-text">Spatial Overview</span>
+                </button>
+            </div>
+
+            <div class="sidebar-section sidebar-status">
+                <p class="sidebar-label">PIPELINE STATUS</p>
+                <div id="sidebar-status-box" class="status-pill">Loading...</div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="dashboard-content">
+            <!-- Tab 1: Hydrology -->
+            <section class="tab-panel active" id="panel-hydrology">
+                <div class="panel-header">
+                    <h1>Reservoir Hydrology</h1>
+                    <p class="panel-sub">Surface area and volumetric storage capacity, 2000-2024</p>
+                </div>
+                <div class="chart-grid-2">
+                    <div class="chart-card">
+                        <h3>Surface Area (Acres)</h3>
+                        <div id="chart-hydro-area" class="plot-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Storage Capacity (MCM)</h3>
+                        <div id="chart-hydro-storage" class="plot-container"></div>
+                    </div>
+                </div>
+                <div class="stats-row" id="stats-hydrology"></div>
+            </section>
+
+            <!-- Tab 2: Climate -->
+            <section class="tab-panel" id="panel-climate">
+                <div class="panel-header">
+                    <h1>Climate Forcing</h1>
+                    <p class="panel-sub">Precipitation, temperature, and evaporation over the analysis period</p>
+                </div>
+                <div class="chart-card">
+                    <h3>Annual Precipitation</h3>
+                    <div id="chart-climate-precip" class="plot-container"></div>
+                </div>
+                <div class="chart-grid-2">
+                    <div class="chart-card">
+                        <h3>Mean Max Temperature</h3>
+                        <div id="chart-climate-tmax" class="plot-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Annual Evaporation (MCM)</h3>
+                        <div id="chart-climate-evap" class="plot-container"></div>
+                    </div>
+                </div>
+                <div class="insight-box" id="insight-climate"></div>
+            </section>
+
+            <!-- Tab 3: Urban Sprawl -->
+            <section class="tab-panel" id="panel-sprawl">
+                <div class="panel-header">
+                    <h1>Urban Sprawl Tracker</h1>
+                    <p class="panel-sub">Watershed urbanization detected via Landsat NDBI analysis</p>
+                </div>
+                <div class="chart-card">
+                    <h3>Absolute and Incremental Urban Footprint</h3>
+                    <div id="chart-sprawl-dual" class="plot-container plot-tall"></div>
+                </div>
+                <div class="stats-row" id="stats-sprawl"></div>
+            </section>
+
+            <!-- Tab 4: EOL Forecast -->
+            <section class="tab-panel" id="panel-forecast">
+                <div class="panel-header">
+                    <h1>End-of-Life Forecast</h1>
+                    <p class="panel-sub">Unmitigated trajectory: storage decline from 2000 to dead storage threshold</p>
+                </div>
+                <div class="chart-card">
+                    <h3>Storage Capacity Projection (Scenario A: Business As Usual)</h3>
+                    <div id="chart-forecast-main" class="plot-container plot-tall"></div>
+                </div>
+                <div class="stats-row" id="stats-forecast"></div>
+            </section>
+
+            <!-- Tab 5: Spatial Overview -->
+            <section class="tab-panel" id="panel-spatial">
+                <div class="panel-header">
+                    <h1>Spatial Overview</h1>
+                    <p class="panel-sub">Static map snapshots from the pipeline. Full interactivity on the <a href="map.html" style="color:var(--accent-teal)">Map page</a>.</p>
+                </div>
+                <div class="spatial-grid">
+                    <figure class="spatial-card">
+                        <img src="data/images/scenario_A_thumb.png" alt="Scenario A: Unmitigated spatial footprint">
+                        <figcaption>Scenario A — Business As Usual</figcaption>
+                    </figure>
+                    <figure class="spatial-card">
+                        <img src="data/images/scenario_B_thumb.png" alt="Scenario B: Check Dams spatial footprint">
+                        <figcaption>Scenario B — Check Dam Cascades</figcaption>
+                    </figure>
+                    <figure class="spatial-card">
+                        <img src="data/images/scenario_C_thumb.png" alt="Scenario C: Strict Zoning spatial footprint">
+                        <figcaption>Scenario C — Strict Zoning</figcaption>
+                    </figure>
+                    <figure class="spatial-card">
+                        <img src="data/images/scenario_D_thumb.png" alt="Scenario D: Afforestation spatial footprint">
+                        <figcaption>Scenario D — Biological Afforestation</figcaption>
+                    </figure>
+                    <figure class="spatial-card">
+                        <img src="data/images/scenario_E_thumb.png" alt="Scenario E: Hybrid Policy spatial footprint">
+                        <figcaption>Scenario E — Ultimate Hybrid Policy</figcaption>
+                    </figure>
+                </div>
+            </section>
+        </main>
+    </div>
+
     <footer class="site-footer">
         <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
     </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/dashboard.js"></script>
 </body>
 </html>
