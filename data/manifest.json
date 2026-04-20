@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-04-20T21:59:33.029221",
+  "pipeline_author": "Haider Ali - NUST NICE",
+  "files": [
+    {
+      "path": "core/rawal_data.json",
+      "size_kb": 25.41
+    },
+    {
+      "path": "downloads/RAWAL_FINAL_MASTER_REPORT.pdf",
+      "size_kb": 3669.9
+    },
+    {
+      "path": "geo/lake_boundary.geojson",
+      "size_kb": 60.79
+    },
+    {
+      "path": "geo/reclaimed_D.geojson",
+      "size_kb": 6785.09
+    },
+    {
+      "path": "geo/reclaimed_E.geojson",
+      "size_kb": 7549.85
+    },
+    {
+      "path": "geo/scenario_A_eol.geojson",
+      "size_kb": 2530.32
+    },
+    {
+      "path": "geo/scenario_B_eol.geojson",
+      "size_kb": 2478.8
+    },
+    {
+      "path": "geo/scenario_C_eol.geojson",
+      "size_kb": 3753.76
+    },
+    {
+      "path": "geo/scenario_D_eol.geojson",
+      "size_kb": 2472.41
+    },
+    {
+      "path": "geo/scenario_E_eol.geojson",
+      "size_kb": 3753.76
+    },
+    {
+      "path": "geo/sprawl_2000.geojson",
+      "size_kb": 1000.8
+    },
+    {
+      "path": "geo/sprawl_2024.geojson",
+      "size_kb": 4083.82
+    },
+    {
+      "path": "geo/watershed_boundary.geojson",
+      "size_kb": 8.42
+    },
+    {
+      "path": "images/scenario_A_thumb.png",
+      "size_kb": 344.64
+    },
+    {
+      "path": "images/scenario_B_thumb.png",
+      "size_kb": 339.79
+    },
+    {
+      "path": "images/scenario_C_thumb.png",
+      "size_kb": 432.37
+    },
+    {
+      "path": "images/scenario_D_thumb.png",
+      "size_kb": 634.82
+    },
+    {
+      "path": "images/scenario_E_thumb.png",
+      "size_kb": 717.88
+    }
+  ]
+}
