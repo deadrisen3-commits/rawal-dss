@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map · Rawal DSS</title>
+    <title>Watershed Map — Rawal DSS</title>
+    <meta name="description" content="Interactive Leaflet map of the Rawal Dam watershed with toggleable 2088 mitigation policy footprints.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -26,14 +30,160 @@
             <a href="about.html" class="nav-link">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>Watershed Map</h1>
-            <p>This page will host the interactive Leaflet watershed map in Phase 5.</p>
-        </div>
+
+    <main class="map-layout">
+        <aside class="map-sidebar">
+
+            <div class="map-sidebar-header">
+                <h1>Watershed Map</h1>
+                <p class="map-sidebar-sub">
+                    30-metre vector overlays of the Rawal catchment, lake,
+                    historical sprawl, and five alternative 2088 futures.
+                </p>
+            </div>
+
+            <!-- Basemap switcher -->
+            <section class="map-block">
+                <h2 class="map-block-label">Basemap</h2>
+                <div class="basemap-options">
+                    <label class="radio-row">
+                        <input type="radio" name="basemap" value="dark" checked>
+                        <span>Dark street map</span>
+                    </label>
+                    <label class="radio-row">
+                        <input type="radio" name="basemap" value="satellite">
+                        <span>Satellite imagery</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Historical view -->
+            <section class="map-block">
+                <h2 class="map-block-label">Historical View</h2>
+                <p class="map-block-hint">
+                    Each view is a complete PDF-parity composite of the watershed.
+                </p>
+                <div class="scenario-options">
+                    <label class="scenario-row">
+                        <input type="radio" name="historical-layer" value="sprawl2000">
+                        <span class="scenario-dot" style="background:#555555;"></span>
+                        <span class="scenario-name">Urban footprint — 2000</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="historical-layer" value="sprawl2024" checked>
+                        <span class="scenario-dot" style="background:#555555;"></span>
+                        <span class="scenario-name">Urban footprint — 2024</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 2088 Policy Scenarios -->
+            <section class="map-block">
+                <h2 class="map-block-label">2088 Policy Scenario</h2>
+                <p class="map-block-hint">
+                    Show the projected footprint under each mitigation policy.
+                </p>
+                <div class="scenario-options">
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="none" checked>
+                        <span class="scenario-dot" style="background:transparent; border:1px dashed #5a6690;"></span>
+                        <span class="scenario-name">None (historical view)</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="A">
+                        <span class="scenario-dot" style="background:#e53935;"></span>
+                        <span class="scenario-name">A · Business as Usual</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="B">
+                        <span class="scenario-dot" style="background:#1e88e5;"></span>
+                        <span class="scenario-name">B · Check Dam Cascades</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="C">
+                        <span class="scenario-dot" style="background:#fb8c00;"></span>
+                        <span class="scenario-name">C · Strict Zoning</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="D">
+                        <span class="scenario-dot" style="background:#e53935;"></span>
+                        <span class="scenario-name">D · Afforestation</span>
+                    </label>
+                    <label class="scenario-row">
+                        <input type="radio" name="scenario" value="E">
+                        <span class="scenario-dot" style="background:#8e24aa;"></span>
+                        <span class="scenario-name">E · Hybrid Policy</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Policy Impact Card -->
+            <section class="map-block">
+                <h2 class="map-block-label">Policy Impact</h2>
+                <div class="impact-card">
+                    <p class="impact-name" id="impact-name">Select a policy</p>
+                    <div class="impact-row">
+                        <div class="impact-cell">
+                            <span class="impact-cell-label">EOL year</span>
+                            <span class="impact-cell-value" id="impact-eol">—</span>
+                        </div>
+                        <div class="impact-cell">
+                            <span class="impact-cell-label">Gained</span>
+                            <span class="impact-cell-value impact-gained" id="impact-gained">—</span>
+                        </div>
+                    </div>
+                    <p class="impact-desc" id="impact-desc">
+                        Pick one of the five 2088 scenarios to see its physical footprint and performance.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Watershed Metrics -->
+            <section class="map-block">
+                <h2 class="map-block-label">Watershed Metrics</h2>
+                <div class="mini-stats">
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Total watershed area</span>
+                        <span class="mini-stat-value" id="stat-watershed-area">—</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Lake area — 2000</span>
+                        <span class="mini-stat-value" id="stat-lake-2000">—</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Lake area — now</span>
+                        <span class="mini-stat-value" id="stat-lake-now">—</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Urban footprint — 2024</span>
+                        <span class="mini-stat-value" id="stat-urban-now">—</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Watershed urbanised</span>
+                        <span class="mini-stat-value" id="stat-urban-pct">—</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-label">Baseline EOL year</span>
+                        <span class="mini-stat-value" id="stat-eol-year">—</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="map-block">
+                <h2 class="map-block-label">Reading the Map</h2>
+                <p class="map-narrative">
+                    The teal dashed line marks the full catchment — every drop of rain falling inside it drains to the lake. Urban pixels come from Landsat NDBI at 30-metre resolution, differenced against the year 2000 baseline. The scenario radios overlay one of the five CA-Markov forecasts for 2088; afforestation scenarios (D, E) also display the reclaimed-land patches in lime green.
+                </p>
+                <p class="map-status" id="map-status">Loading map...</p>
+            </section>
+
+        </aside>
+
+        <div id="map-canvas" class="map-canvas"></div>
     </main>
-    <footer class="site-footer">
-        <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
-    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/map.js"></script>
 </body>
 </html>

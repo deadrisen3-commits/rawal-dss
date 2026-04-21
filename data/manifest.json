@@ -1,54 +1,22 @@
 {
-  "generated_at": "2026-04-20T21:59:33.029221",
+  "generated_at": "2026-04-21T22:00:20.232306",
   "pipeline_author": "Haider Ali - NUST NICE",
   "files": [
     {
+      "path": "manifest.json",
+      "size_kb": 2.41
+    },
+    {
       "path": "core/rawal_data.json",
-      "size_kb": 25.41
+      "size_kb": 25.42
     },
     {
       "path": "downloads/RAWAL_FINAL_MASTER_REPORT.pdf",
-      "size_kb": 3669.9
+      "size_kb": 3672.2
     },
     {
       "path": "geo/lake_boundary.geojson",
       "size_kb": 60.79
-    },
-    {
-      "path": "geo/reclaimed_D.geojson",
-      "size_kb": 6785.09
-    },
-    {
-      "path": "geo/reclaimed_E.geojson",
-      "size_kb": 7549.85
-    },
-    {
-      "path": "geo/scenario_A_eol.geojson",
-      "size_kb": 2530.32
-    },
-    {
-      "path": "geo/scenario_B_eol.geojson",
-      "size_kb": 2478.8
-    },
-    {
-      "path": "geo/scenario_C_eol.geojson",
-      "size_kb": 3753.76
-    },
-    {
-      "path": "geo/scenario_D_eol.geojson",
-      "size_kb": 2472.41
-    },
-    {
-      "path": "geo/scenario_E_eol.geojson",
-      "size_kb": 3753.76
-    },
-    {
-      "path": "geo/sprawl_2000.geojson",
-      "size_kb": 1000.8
-    },
-    {
-      "path": "geo/sprawl_2024.geojson",
-      "size_kb": 4083.82
     },
     {
       "path": "geo/watershed_boundary.geojson",
@@ -56,11 +24,11 @@
     },
     {
       "path": "images/scenario_A_thumb.png",
-      "size_kb": 344.64
+      "size_kb": 344.52
     },
     {
       "path": "images/scenario_B_thumb.png",
-      "size_kb": 339.79
+      "size_kb": 339.48
     },
     {
       "path": "images/scenario_C_thumb.png",
@@ -68,11 +36,83 @@
     },
     {
       "path": "images/scenario_D_thumb.png",
-      "size_kb": 634.82
+      "size_kb": 635.56
     },
     {
       "path": "images/scenario_E_thumb.png",
-      "size_kb": 717.88
+      "size_kb": 718.07
+    },
+    {
+      "path": "overlays/reclaimed_D.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/reclaimed_D.png",
+      "size_kb": 62.28
+    },
+    {
+      "path": "overlays/reclaimed_E.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/reclaimed_E.png",
+      "size_kb": 60.1
+    },
+    {
+      "path": "overlays/scenario_A_eol.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/scenario_A_eol.png",
+      "size_kb": 47.14
+    },
+    {
+      "path": "overlays/scenario_B_eol.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/scenario_B_eol.png",
+      "size_kb": 46.4
+    },
+    {
+      "path": "overlays/scenario_C_eol.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/scenario_C_eol.png",
+      "size_kb": 56.37
+    },
+    {
+      "path": "overlays/scenario_D_eol.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/scenario_D_eol.png",
+      "size_kb": 95.35
+    },
+    {
+      "path": "overlays/scenario_E_eol.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/scenario_E_eol.png",
+      "size_kb": 110.25
+    },
+    {
+      "path": "overlays/sprawl_2000.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/sprawl_2000.png",
+      "size_kb": 26.81
+    },
+    {
+      "path": "overlays/sprawl_2024.json",
+      "size_kb": 0.12
+    },
+    {
+      "path": "overlays/sprawl_2024.png",
+      "size_kb": 61.65
     }
   ]
 }
