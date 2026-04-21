@@ -33,6 +33,8 @@
     </header>
 
     <main class="landing-main">
+
+        <!-- ===== HERO ===== -->
         <section class="hero">
             <div class="hero-content">
                 <p class="hero-tag">DECISION SUPPORT SYSTEM · NUST NICE · FYDP</p>
@@ -42,9 +44,117 @@
                     Powered by 25 years of Landsat satellite imagery, SRTM terrain data,
                     PMD climate records, and a calibrated CA-Markov forecasting engine.
                 </p>
+                <div class="hero-cta">
+                    <a href="dashboard.html" class="btn btn-primary">Explore Dashboard</a>
+                    <a href="methodology.html" class="btn btn-secondary">Read Methodology</a>
+                </div>
                 <p class="hero-status" id="hero-status">Loading pipeline data...</p>
             </div>
         </section>
+
+        <!-- ===== CRISIS STATS ===== -->
+        <section class="crisis-section">
+            <div class="section-header">
+                <p class="section-tag">THE CRISIS · OBSERVED 2000–2024</p>
+                <h2 class="section-title">A reservoir on a measurable timeline.</h2>
+                <p class="section-sub">
+                    Every number below is computed from the pipeline's real outputs — no projections, no estimates for the historical window.
+                </p>
+            </div>
+            <div class="crisis-grid">
+                <div class="crisis-card crisis-red">
+                    <p class="crisis-label">End of Life</p>
+                    <div class="crisis-value" id="stat-eol-year">—</div>
+                    <p class="crisis-sub"><span id="stat-years-left">—</span> years remaining</p>
+                </div>
+                <div class="crisis-card">
+                    <p class="crisis-label">Storage Lost Since 2000</p>
+                    <div class="crisis-value"><span id="stat-storage-pct">—</span>%</div>
+                    <p class="crisis-sub"><span id="stat-storage-lost">—</span> MCM gone</p>
+                </div>
+                <div class="crisis-card">
+                    <p class="crisis-label">Surface Area Lost</p>
+                    <div class="crisis-value"><span id="stat-area-lost">—</span></div>
+                    <p class="crisis-sub">acres of lake since 2000</p>
+                </div>
+                <div class="crisis-card">
+                    <p class="crisis-label">Watershed Urbanized</p>
+                    <div class="crisis-value"><span id="stat-urban-pct">—</span>%</div>
+                    <p class="crisis-sub">of catchment area (2024)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MODULES GRID ===== -->
+        <section class="modules-section">
+            <div class="section-header">
+                <p class="section-tag">EXPLORE · FIVE INTEGRATED MODULES</p>
+                <h2 class="section-title">From measurement to policy.</h2>
+                <p class="section-sub">
+                    The pipeline's outputs are exposed through interactive modules designed for stakeholders, not specialists.
+                </p>
+            </div>
+            <div class="modules-grid">
+                <a href="dashboard.html" class="module-card">
+                    <div class="module-number">01</div>
+                    <h3 class="module-title">Dashboard</h3>
+                    <p class="module-body">Historical hydrology, climate forcing, urban sprawl, and the unmitigated forecast — in one screen.</p>
+                    <span class="module-cta">Open analytics →</span>
+                </a>
+                <a href="map.html" class="module-card">
+                    <div class="module-number">02</div>
+                    <h3 class="module-title">Watershed Map</h3>
+                    <p class="module-body">Interactive Leaflet map of the lake, catchment boundary, and sprawl footprint evolution.</p>
+                    <span class="module-cta">View geography →</span>
+                </a>
+                <a href="simulator.html" class="module-card">
+                    <div class="module-number">03</div>
+                    <h3 class="module-title">Policy Simulator</h3>
+                    <p class="module-body">What-if engine for check dams, zoning, afforestation, and the hybrid policy mix.</p>
+                    <span class="module-cta">Run scenarios →</span>
+                </a>
+                <a href="scenarios.html" class="module-card">
+                    <div class="module-number">04</div>
+                    <h3 class="module-title">Scenario Ranking</h3>
+                    <p class="module-body">Multi-criteria decision analysis comparing all five mitigation pathways side-by-side.</p>
+                    <span class="module-cta">Compare policies →</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== METHODOLOGY TEASER ===== -->
+        <section class="method-section">
+            <div class="method-card">
+                <p class="section-tag">THE ENGINE BEHIND THE NUMBERS</p>
+                <h2 class="method-title">A fully reproducible geospatial pipeline.</h2>
+                <div class="method-specs">
+                    <div class="method-spec">
+                        <span class="method-spec-num">6</span>
+                        <span class="method-spec-label">Landsat epochs analyzed</span>
+                    </div>
+                    <div class="method-spec">
+                        <span class="method-spec-num">2000–2024</span>
+                        <span class="method-spec-label">Observation window</span>
+                    </div>
+                    <div class="method-spec">
+                        <span class="method-spec-num">5</span>
+                        <span class="method-spec-label">Mitigation policies simulated</span>
+                    </div>
+                    <div class="method-spec">
+                        <span class="method-spec-num">CA-Markov</span>
+                        <span class="method-spec-label">Forecasting kernel</span>
+                    </div>
+                </div>
+                <p class="method-body">
+                    Rasterio and GeoPandas drive the spatial processing layer. Hargreaves-Samani computes evaporation from PMD temperature and extraterrestrial radiation. NDWI and NDBI indices are calibrated per Landsat generation to isolate water and built-up pixels. A logistic growth curve is fit against 25 years of observed sprawl, then a CA-Markov kernel propagates urbanization forward on a 30m grid until the storage volume crosses the dead-storage threshold.
+                </p>
+                <div class="method-cta">
+                    <a href="methodology.html" class="btn btn-secondary">Read full methodology</a>
+                    <a href="downloads.html" class="btn btn-ghost">Download master report (PDF) →</a>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="site-footer">

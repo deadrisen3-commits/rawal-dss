@@ -149,40 +149,84 @@ function drawHydroStorage(historical) {
 // CHART 3: Precipitation
 // ------------------------------------------------------------
 function drawClimatePrecip(historical, baseline) {
-    const trace = {
-        x: historical.years,
-        y: historical.precip_mm,
+    var years = historical.years.map(function(y) { return String(y); });
+    var precip = historical.precip_mm;
+
+    var trace = {
+        x: years,
+        y: precip,
         type: 'bar',
         name: 'Annual Precipitation',
-        marker: { color: '#1e88e5', line: { color: '#1976d2', width: 1 } },
+        marker: {
+            color: '#1e88e5',
+            line: { color: '#1976d2', width: 1 }
+        },
         hovertemplate: '<b>%{x}</b><br>%{y:.0f} mm<extra></extra>'
     };
 
-    const baselineLine = {
-        type: 'line',
-        x0: -0.5, x1: historical.years.length - 0.5,
-        y0: baseline, y1: baseline,
-        line: { color: '#14b8a6', width: 2, dash: 'dash' },
-        xref: 'x', yref: 'y'
-    };
-
-    const layout = Object.assign({}, RAWAL_PLOTLY_LAYOUT, {
-        xaxis: Object.assign({}, RAWAL_PLOTLY_LAYOUT.xaxis, { title: 'Year', type: 'category' }),
-        yaxis: Object.assign({}, RAWAL_PLOTLY_LAYOUT.yaxis, { title: 'mm' }),
-        shapes: [baselineLine],
+    var layout = {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: {
+            family: 'Inter, sans-serif',
+            color: '#e6ecff',
+            size: 12
+        },
+        margin: { t: 30, r: 30, b: 50, l: 60 },
+        xaxis: {
+            type: 'category',
+            categoryorder: 'array',
+            categoryarray: years,
+            title: { text: 'Year' },
+            gridcolor: '#2a3358',
+            linecolor: '#2a3358',
+            zerolinecolor: '#2a3358',
+            tickfont: { family: 'JetBrains Mono, monospace', size: 11 },
+            tickmode: 'array',
+            tickvals: years,
+            ticktext: years
+        },
+        yaxis: {
+            title: { text: 'mm' },
+            gridcolor: '#2a3358',
+            linecolor: '#2a3358',
+            zerolinecolor: '#2a3358',
+            tickfont: { family: 'JetBrains Mono, monospace', size: 11 }
+        },
+        shapes: [{
+            type: 'line',
+            xref: 'paper',
+            yref: 'y',
+            x0: 0,
+            x1: 1,
+            y0: baseline,
+            y1: baseline,
+            line: { color: '#14b8a6', width: 2, dash: 'dash' }
+        }],
         annotations: [{
-            x: historical.years[historical.years.length - 1],
+            xref: 'paper',
+            yref: 'y',
+            x: 0.99,
             y: baseline,
-            xref: 'x', yref: 'y',
             text: 'PMD Baseline: ' + baseline + ' mm',
             showarrow: false,
-            font: { color: '#14b8a6', size: 10, family: 'JetBrains Mono, monospace' },
+            font: {
+                color: '#14b8a6',
+                size: 10,
+                family: 'JetBrains Mono, monospace'
+            },
             xanchor: 'right',
             yanchor: 'bottom',
             bgcolor: 'rgba(11, 16, 32, 0.85)',
             borderpad: 4
-        }]
-    });
+        }],
+        hoverlabel: {
+            bgcolor: '#1c2340',
+            bordercolor: '#14b8a6',
+            font: { family: 'JetBrains Mono, monospace', color: '#e6ecff' }
+        },
+        legend: { bgcolor: 'rgba(0,0,0,0)', font: { size: 11 } }
+    };
 
     Plotly.newPlot('chart-climate-precip', [trace], layout, RAWAL_PLOTLY_CONFIG);
 }
