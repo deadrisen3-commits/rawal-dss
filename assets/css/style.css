@@ -3644,3 +3644,66 @@ html, body {
     .team-grid { grid-template-columns: 1fr; }
     .project-meta { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================================
+    MAP PAGE — BOUNDARY TOGGLE SAFETY NET (Phase 5 fix)
+    Re-declares the checkbox row styles in case they were
+    removed during the radio-button rewrite. Matches the
+    original Phase 5 design tokens exactly.
+    ============================================================ */
+
+.map-block-hint {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin: 4px 0 var(--space-sm);
+}
+
+.layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.layer-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.layer-row:hover {
+    background: var(--bg-elevated);
+}
+
+.layer-row input[type="checkbox"] {
+    accent-color: var(--accent-teal);
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+}
+
+.layer-swatch {
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.layer-name {
+    font-size: 0.86rem;
+    color: var(--text-primary);
+}
+
+/* Hidden SVG holder for the clip-path definition — always invisible */
+#rawal-clip-svg {
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+}

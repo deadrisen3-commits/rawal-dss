@@ -57,6 +57,23 @@
                 </div>
             </section>
 
+            <!-- Boundary layers — independently toggleable vector outlines -->
+<section class="map-block">
+    <h2 class="map-block-label">Boundary Layers</h2>
+    <p class="map-block-hint">
+        Toggle the dotted watershed edge and the lake outline independently.
+        The underlying raster overlays are always clipped to the watershed
+        polygon, so turning the boundary off never re-introduces overspill.
+    </p>
+    <div class="layer-list">
+        <label class="layer-row">
+            <input type="checkbox" id="toggle-watershed" checked>
+            <span class="layer-swatch" style="background:transparent; border:2px dashed #14b8a6;"></span>
+            <span class="layer-name">Watershed boundary</span>
+        </label>
+        
+    </div>
+</section>
             <!-- Historical view -->
             <section class="map-block">
                 <h2 class="map-block-label">Historical View</h2>

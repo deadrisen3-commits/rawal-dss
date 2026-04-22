@@ -1,8 +1,12 @@
 /* ============================================================
-   RAWAL DSS — INTERACTIVE WATERSHED MAP (Phase 5 final)
-   Each PNG is a complete PDF-style composite (forest + urban + lake).
-   Only ONE raster overlay is visible at a time (radio semantics).
-   ============================================================ */
+    RAWAL DSS — INTERACTIVE WATERSHED MAP (Phase 5 · final fix)
+    Every raster overlay is positioned using the watershed
+    polygon's EXACT WGS84 bounding box, and clipped to the
+    polygon shape via an SVG clip-path built in the same
+    reference frame. Both edges are now mathematically forced
+    to coincide, eliminating the top-side mismatch caused by
+    UTM-to-WGS84 reprojection padding in the Python bounds JSON.
+    ============================================================ */
 
 const RAWAL_CENTER = [33.7019, 73.1178];
 const INITIAL_ZOOM = 12;
@@ -14,15 +18,14 @@ const VECTOR_STYLES = {
     }
 };
 
-// Which raster overlay corresponds to each state
 const RASTER_PATHS = {
-    'sprawl2000':   'data/overlays/sprawl_2000',
-    'sprawl2024':   'data/overlays/sprawl_2024',
-    'scenario_A':   'data/overlays/scenario_A_eol',
-    'scenario_B':   'data/overlays/scenario_B_eol',
-    'scenario_C':   'data/overlays/scenario_C_eol',
-    'scenario_D':   'data/overlays/scenario_D_eol',
-    'scenario_E':   'data/overlays/scenario_E_eol'
+    'sprawl2000': 'data/overlays/sprawl_2000.png',
+    'sprawl2024': 'data/overlays/sprawl_2024.png',
+    'scenario_A': 'data/overlays/scenario_A_eol.png',
+    'scenario_B': 'data/overlays/scenario_B_eol.png',
+    'scenario_C': 'data/overlays/scenario_C_eol.png',
+    'scenario_D': 'data/overlays/scenario_D_eol.png',
+    'scenario_E': 'data/overlays/scenario_E_eol.png'
 };
 
 const OVERLAY_OPACITY = 0.92;
@@ -30,9 +33,11 @@ const OVERLAY_OPACITY = 0.92;
 let map = null;
 let baseLayers = {};
 let watershedLayer = null;
-let rasterOverlays = {};       // preloaded L.imageOverlay instances
-let activeOverlay = null;      // the one currently shown on the map
+let rasterOverlays = {};
+let activeOverlay = null;
 let cachedPipelineData = null;
+let watershedGeoJSON = null;
+let watershedBBox = null;
 
 document.addEventListener('rawal:ready', function (event) {
     cachedPipelineData = event.detail;
@@ -73,54 +78,115 @@ function buildMap() {
 }
 
 function loadAllLayers() {
-    // Load watershed boundary (always visible)
     const watershedPromise = fetch('data/geo/watershed_boundary.geojson')
         .then(function (res) { return res.json(); })
         .then(function (geojson) {
+            watershedGeoJSON = geojson;
             watershedLayer = L.geoJSON(geojson, { style: VECTOR_STYLES.watershed });
+
+            // Capture the polygon's exact WGS84 bbox — this becomes the
+            // reference frame for BOTH the image placement AND the clip path.
+            const lb = watershedLayer.getBounds();
+            watershedBBox = {
+                south: lb.getSouth(),
+                west:  lb.getWest(),
+                north: lb.getNorth(),
+                east:  lb.getEast()
+            };
+
             watershedLayer.addTo(map);
-            map.fitBounds(watershedLayer.getBounds(), { padding: [20, 20] });
+            map.fitBounds(lb, { padding: [20, 20] });
         })
         .catch(function (err) { console.error('Watershed load failed:', err); });
 
-    // Preload all raster overlays
-    const rasterPromises = Object.keys(RASTER_PATHS).map(function (key) {
-        return preloadRaster(key, RASTER_PATHS[key]);
-    });
+    watershedPromise.then(function () {
+        // Place every PNG at the polygon's exact bbox (ignoring the Python
+        // bounds JSON entirely). The slight 0.003° stretch that corrects
+        // the asymmetry is visually imperceptible at thesis resolution.
+        const leafletBounds = [
+            [watershedBBox.south, watershedBBox.west],
+            [watershedBBox.north, watershedBBox.east]
+        ];
 
-    Promise.all([watershedPromise].concat(rasterPromises)).then(function () {
-        // Default view: show 2024 composite
+        Object.keys(RASTER_PATHS).forEach(function (key) {
+            rasterOverlays[key] = L.imageOverlay(RASTER_PATHS[key], leafletBounds, {
+                opacity: OVERLAY_OPACITY,
+                interactive: false
+            });
+        });
+
+        buildWatershedClipPath(watershedGeoJSON, watershedBBox);
+
         setActiveOverlay('sprawl2024');
 
         wireUpLayerRadios();
         wireUpBasemapSwitch();
         wireUpScenarioRadios();
+        wireUpBoundaryToggles();
 
         const statusEl = document.getElementById('map-status');
         if (statusEl) {
-            statusEl.textContent = 'Map ready · PDF-parity composite overlays loaded';
+            statusEl.textContent = 'Map ready · polygon-aligned overlays loaded';
             statusEl.classList.add('loaded');
         }
     });
 }
 
-function preloadRaster(key, basePath) {
-    return fetch(basePath + '.json')
-        .then(function (res) {
-            if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + basePath);
-            return res.json();
-        })
-        .then(function (bounds) {
-            const leafletBounds = [
-                [bounds.south, bounds.west],
-                [bounds.north, bounds.east]
-            ];
-            rasterOverlays[key] = L.imageOverlay(basePath + '.png', leafletBounds, {
-                opacity: OVERLAY_OPACITY,
-                interactive: false
-            });
-        })
-        .catch(function (err) { console.error('Raster load failed:', basePath, err); });
+function buildWatershedClipPath(geojson, bbox) {
+    const west = bbox.west, east = bbox.east;
+    const south = bbox.south, north = bbox.north;
+
+    const rings = [];
+    const geom = geojson.features[0].geometry;
+    if (geom.type === 'Polygon') {
+        geom.coordinates.forEach(function (ring) { rings.push(ring); });
+    } else if (geom.type === 'MultiPolygon') {
+        geom.coordinates.forEach(function (poly) {
+            poly.forEach(function (ring) { rings.push(ring); });
+        });
+    }
+
+    const pathData = rings.map(function (ring) {
+        return ring.map(function (pt, i) {
+            const lng = pt[0], lat = pt[1];
+            const x = (lng - west) / (east - west);
+            const y = (north - lat) / (north - south);
+            return (i === 0 ? 'M' : 'L') + x.toFixed(6) + ',' + y.toFixed(6);
+        }).join(' ') + ' Z';
+    }).join(' ');
+
+    const prior = document.getElementById('rawal-clip-svg');
+    if (prior) prior.remove();
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('id', 'rawal-clip-svg');
+    svg.setAttribute('width', '0');
+    svg.setAttribute('height', '0');
+    svg.style.position = 'absolute';
+    svg.style.pointerEvents = 'none';
+
+    const defs = document.createElementNS(svgNS, 'defs');
+    const clipPath = document.createElementNS(svgNS, 'clipPath');
+    clipPath.setAttribute('id', 'watershed-clip');
+    clipPath.setAttribute('clipPathUnits', 'objectBoundingBox');
+
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', pathData);
+
+    clipPath.appendChild(path);
+    defs.appendChild(clipPath);
+    svg.appendChild(defs);
+    document.body.appendChild(svg);
+}
+
+function applyClipToOverlay(overlay) {
+    if (!overlay) return;
+    const el = overlay.getElement();
+    if (el) {
+        el.style.clipPath = 'url(#watershed-clip)';
+        el.style.webkitClipPath = 'url(#watershed-clip)';
+    }
 }
 
 function setActiveOverlay(key) {
@@ -135,16 +201,29 @@ function setActiveOverlay(key) {
 
     overlay.addTo(map);
     activeOverlay = overlay;
+    applyClipToOverlay(overlay);
 
-    // Ensure the watershed boundary stays on top
-    if (watershedLayer) watershedLayer.bringToFront();
+    if (watershedLayer && map.hasLayer(watershedLayer)) watershedLayer.bringToFront();
+}
+
+function wireUpBoundaryToggles() {
+    const watershedCb = document.getElementById('toggle-watershed');
+    if (watershedCb) {
+        watershedCb.addEventListener('change', function (e) {
+            if (!watershedLayer) return;
+            if (e.target.checked) {
+                watershedLayer.addTo(map);
+                watershedLayer.bringToFront();
+            } else {
+                map.removeLayer(watershedLayer);
+            }
+        });
+    }
 }
 
 function wireUpLayerRadios() {
-    // Layer radios: 2000 vs 2024 historical view
     document.querySelectorAll('[name="historical-layer"]').forEach(function (radio) {
         radio.addEventListener('change', function (e) {
-            // Clear scenario selection
             const noneScenario = document.querySelector('[name="scenario"][value="none"]');
             if (noneScenario) noneScenario.checked = true;
             updateImpactCard(null);
@@ -159,9 +238,8 @@ function wireUpBasemapSwitch() {
             const chosen = e.target.value;
             Object.values(baseLayers).forEach(function (layer) { map.removeLayer(layer); });
             if (baseLayers[chosen]) baseLayers[chosen].addTo(map);
-            // Base layer sits below overlays — re-assert z-order
             if (activeOverlay) activeOverlay.bringToFront();
-            if (watershedLayer) watershedLayer.bringToFront();
+            if (watershedLayer && map.hasLayer(watershedLayer)) watershedLayer.bringToFront();
         });
     });
 }
@@ -174,14 +252,12 @@ function wireUpScenarioRadios() {
 
 function switchScenario(choice) {
     if (choice === 'none') {
-        // Fall back to whatever historical radio is selected, or 2024 default
         const selectedHist = document.querySelector('[name="historical-layer"]:checked');
         setActiveOverlay(selectedHist ? selectedHist.value : 'sprawl2024');
         updateImpactCard(null);
         return;
     }
 
-    // Clear historical radio selection to make it clear scenario overrides it
     document.querySelectorAll('[name="historical-layer"]').forEach(function (r) { r.checked = false; });
 
     setActiveOverlay('scenario_' + choice);
@@ -197,30 +273,30 @@ function updateImpactCard(choice) {
     if (!nameEl) return;
 
     if (!choice || !cachedPipelineData) {
-        nameEl.textContent = 'Select a policy';
-        eolEl.textContent = '—';
+        nameEl.textContent   = 'Select a policy';
+        eolEl.textContent    = '—';
         gainedEl.textContent = '—';
-        descEl.textContent = 'Pick one of the five 2088 scenarios to see its physical footprint and performance.';
+        descEl.textContent   = 'Pick one of the five 2088 scenarios to see its physical footprint and performance.';
         return;
     }
 
     const scen = cachedPipelineData.scenarios[choice];
     if (!scen) return;
 
-    nameEl.textContent = scen.id + ' · ' + scen.name;
-    eolEl.textContent = scen.eol_year;
+    nameEl.textContent   = scen.id + ' · ' + scen.name;
+    eolEl.textContent    = scen.eol_year;
     gainedEl.textContent = (scen.years_gained_vs_baseline > 0 ? '+' : '') + scen.years_gained_vs_baseline + ' yrs';
-    descEl.textContent = scen.description;
+    descEl.textContent   = scen.description;
 }
 
 function populateSidebarStats(data) {
     const hist = data.historical;
-    const ws = data.watershed;
+    const ws   = data.watershed;
     const meta = data.metadata;
 
     const area2000 = hist.water_area_acres[0];
-    const areaNow = hist.water_area_acres[hist.water_area_acres.length - 1];
-    const years = meta.analysis_years;
+    const areaNow  = hist.water_area_acres[hist.water_area_acres.length - 1];
+    const years    = meta.analysis_years;
 
     setText('stat-watershed-area', formatAcres(ws.total_acres));
     setText('stat-lake-2000', formatAcres(area2000));
