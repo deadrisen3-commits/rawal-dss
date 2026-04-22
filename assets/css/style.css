@@ -1167,3 +1167,377 @@ html, body {
         height: 70vh;
     }
 }
+
+
+/* ============================================================
+   POLICY SIMULATOR PAGE (Phase 6)
+   ============================================================ */
+
+.sim-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: calc(100vh - 65px);
+}
+
+/* ---------- LEFT SIDEBAR ---------- */
+.sim-sidebar {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: var(--space-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.sim-sidebar-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+}
+
+.sim-sidebar-sub {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.sim-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+.sim-block:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.sim-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-xs);
+}
+
+.sim-slider-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sim-slider-value {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+}
+
+.sim-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    outline: none;
+    margin: var(--space-xs) 0;
+    cursor: pointer;
+}
+
+.sim-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    border: 2px solid var(--bg-secondary);
+    box-shadow: 0 0 0 1px var(--accent-teal);
+    cursor: pointer;
+}
+
+.sim-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    border: 2px solid var(--bg-secondary);
+    box-shadow: 0 0 0 1px var(--accent-teal);
+    cursor: pointer;
+}
+
+.sim-slider-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: var(--space-xs);
+}
+
+.sim-reset-btn, .sim-preset-btn {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.sim-reset-btn {
+    margin-bottom: var(--space-sm);
+}
+
+.sim-reset-btn:hover {
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+}
+
+.sim-preset-btn {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    color: var(--bg-primary);
+}
+
+.sim-preset-btn:hover {
+    background: var(--accent-teal-hover, #0f9184);
+    border-color: var(--accent-teal-hover, #0f9184);
+}
+
+.sim-note {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.sim-note-title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    margin-bottom: var(--space-xs);
+}
+
+.sim-note-body {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ---------- RIGHT MAIN PANEL ---------- */
+.sim-main {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    overflow-y: auto;
+}
+
+.sim-headline {
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--space-lg);
+    align-items: center;
+}
+
+.sim-headline-eol {
+    text-align: center;
+    border-right: 1px solid var(--border-color);
+    padding-right: var(--space-lg);
+}
+
+.sim-headline-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.sim-headline-value {
+    font-family: var(--font-mono);
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    line-height: 1;
+}
+
+.sim-headline-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.sim-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sim-metric:last-child {
+    border-bottom: none;
+}
+
+.sim-metric-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.sim-metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.sim-metric-value.positive { color: var(--accent-teal); }
+.sim-metric-value.negative { color: var(--accent-red); }
+
+.sim-chart-wrap {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+}
+
+.sim-chart-header {
+    margin-bottom: var(--space-md);
+}
+
+.sim-chart-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+}
+
+.sim-chart-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.sim-chart-container {
+    position: relative;
+    height: 380px;
+}
+
+.sim-comparison {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+}
+
+.sim-comparison h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+}
+
+.sim-compare-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-sm);
+}
+
+.compare-card {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--border-color);
+    border-radius: 6px;
+    padding: var(--space-md);
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.compare-card.beaten {
+    opacity: 0.55;
+    filter: grayscale(0.3);
+}
+
+.compare-card.compare-custom {
+    border-top-color: var(--accent-teal);
+    background: linear-gradient(135deg, rgba(20,184,166,0.08), transparent);
+}
+
+.compare-id {
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+}
+
+.compare-custom .compare-id {
+    color: var(--accent-teal);
+}
+
+.compare-name {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    min-height: 2.4em;
+    margin-bottom: var(--space-xs);
+}
+
+.compare-eol {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.compare-gained {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--accent-teal);
+    margin-top: 2px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+    .sim-layout {
+        grid-template-columns: 1fr;
+    }
+    .sim-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: none;
+    }
+    .sim-headline {
+        grid-template-columns: 1fr;
+    }
+    .sim-headline-eol {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-right: 0;
+        padding-bottom: var(--space-md);
+    }
+    .sim-compare-strip {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .sim-compare-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulator · Rawal DSS</title>
+    <title>Policy Simulator — Rawal DSS</title>
+    <meta name="description" content="Interactive what-if simulator for Rawal Dam mitigation policy combinations.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -26,14 +29,140 @@
             <a href="about.html" class="nav-link">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>Policy Simulator</h1>
-            <p>This page will contain the what-if mitigation policy simulator in Phase 6.</p>
-        </div>
+
+    <main class="sim-layout">
+
+        <!-- LEFT: slider panel -->
+        <aside class="sim-sidebar">
+            <div class="sim-sidebar-header">
+                <h1>Policy Simulator</h1>
+                <p class="sim-sidebar-sub">
+                    Adjust the four levers below to test custom mitigation combinations.
+                    The right-side outputs update live using the same sediment-accounting
+                    equations from the Python pipeline.
+                </p>
+            </div>
+
+            <section class="sim-block">
+                <div class="sim-slider-header">
+                    <span class="sim-slider-label">Sediment Trap Efficiency</span>
+                    <span class="sim-slider-value" id="val-trap">0%</span>
+                </div>
+                <input type="range" class="sim-slider" id="slider-trap"
+                       min="0" max="50" step="1" value="0">
+                <p class="sim-slider-desc">
+                    Check dam cascades intercept sediment before it reaches the reservoir.
+                    Scenario B uses 25%.
+                </p>
+            </section>
+
+            <section class="sim-block">
+                <div class="sim-slider-header">
+                    <span class="sim-slider-label">Afforestation Reclaim Rate</span>
+                    <span class="sim-slider-value" id="val-afforest">0 ac/yr</span>
+                </div>
+                <input type="range" class="sim-slider" id="slider-afforest"
+                       min="0" max="600" step="10" value="0">
+                <p class="sim-slider-desc">
+                    Annual acres of watershed land returned to forest. Reduces the
+                    effective transformed area driving sediment generation.
+                    Scenario D uses 300 ac/yr.
+                </p>
+            </section>
+
+            <section class="sim-block">
+                <div class="sim-slider-header">
+                    <span class="sim-slider-label">Urban Growth Restraint</span>
+                    <span class="sim-slider-value" id="val-zoning">0%</span>
+                </div>
+                <input type="range" class="sim-slider" id="slider-zoning"
+                       min="0" max="100" step="1" value="0">
+                <p class="sim-slider-desc">
+                    Spatial zoning aggressiveness. 0% = unrestricted sprawl (Scenario A).
+                    100% = complete containment (theoretical ceiling).
+                    Scenario C sits at approximately 70%.
+                </p>
+            </section>
+
+            <section class="sim-block">
+                <div class="sim-slider-header">
+                    <span class="sim-slider-label">Climate Stress</span>
+                    <span class="sim-slider-value" id="val-climate">+5%</span>
+                </div>
+                <input type="range" class="sim-slider" id="slider-climate"
+                       min="-20" max="20" step="1" value="5">
+                <p class="sim-slider-desc">
+                    Deviation from baseline precipitation. Wetter climates accelerate
+                    erosion and sediment transport. Baseline forecasts assume +5%.
+                </p>
+            </section>
+
+            <section class="sim-block">
+                <button class="sim-reset-btn" id="btn-reset">Reset to Business-As-Usual</button>
+                <button class="sim-preset-btn" id="btn-preset-e">Load Hybrid Policy Preset</button>
+            </section>
+
+            <section class="sim-block sim-note">
+                <h3 class="sim-note-title">Validation note</h3>
+                <p class="sim-note-body">
+                    The simulator replicates the sediment-decline math from Engines 4
+                    and 6 of the pipeline. It does not re-run the CA-Markov spatial
+                    simulation, so custom scenarios share Scenario A's logistic sprawl
+                    curve by default, modified by the zoning restraint slider.
+                </p>
+            </section>
+        </aside>
+
+        <!-- RIGHT: live outputs -->
+        <section class="sim-main">
+
+            <div class="sim-headline">
+                <div class="sim-headline-eol">
+                    <p class="sim-headline-label">Projected End of Life</p>
+                    <p class="sim-headline-value" id="out-eol">2088</p>
+                </div>
+                <div class="sim-headline-metrics">
+                    <div class="sim-metric">
+                        <span class="sim-metric-label">Years gained vs. Scenario A</span>
+                        <span class="sim-metric-value" id="out-gained">+0 years</span>
+                    </div>
+                    <div class="sim-metric">
+                        <span class="sim-metric-label">Storage preserved at 2088</span>
+                        <span class="sim-metric-value" id="out-preserved">0.00 MCM</span>
+                    </div>
+                    <div class="sim-metric">
+                        <span class="sim-metric-label">Simulation horizon</span>
+                        <span class="sim-metric-value" id="out-horizon">66 years</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sim-chart-wrap">
+                <div class="sim-chart-header">
+                    <h2>Storage decline trajectory</h2>
+                    <p class="sim-chart-sub">
+                        Red dashed: Business-as-Usual baseline. Teal solid: your custom
+                        scenario. Black: dead-storage threshold (reservoir failure).
+                    </p>
+                </div>
+                <div class="sim-chart-container">
+                    <canvas id="sim-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="sim-comparison">
+                <h2>Ranking against pre-computed scenarios</h2>
+                <div class="sim-compare-strip" id="compare-strip">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </section>
+
     </main>
-    <footer class="site-footer">
-        <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
-    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/simulator.js"></script>
 </body>
 </html>
