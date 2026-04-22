@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About · Rawal DSS</title>
+    <meta name="description" content="About the team, supervisor, and institution behind the Rawal Dam Decision Support System final-year project.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -26,14 +29,268 @@
             <a href="about.html" class="nav-link active">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>About</h1>
-            <p>This page will contain project attribution and acknowledgments in Phase 8.</p>
-        </div>
+
+    <main class="about-main">
+
+        <!-- ===== PAGE HEADER ===== -->
+        <section class="about-header">
+            <p class="section-tag">ABOUT THIS PROJECT</p>
+            <h1 class="about-title">A final-year investigation into the future of a dam that feeds two cities.</h1>
+            <p class="about-lead">
+                Rawal Dam supplies drinking water to Islamabad and Rawalpindi. It was commissioned in 1962 with
+                a design capacity of 58.59 MCM. A combination of sediment loading, urbanisation, and climate
+                stress has reduced its live storage over six decades. This Decision Support System was built to
+                quantify that trajectory, project its end-of-life under business-as-usual conditions, and
+                evaluate the policy options that could defer reservoir failure.
+            </p>
+        </section>
+
+        <!-- ===== PROJECT CARD ===== -->
+        <section class="about-section">
+            <div class="about-project-card">
+                <div class="project-meta">
+                    <div class="project-meta-item">
+                        <span class="project-meta-label">Project type</span>
+                        <span class="project-meta-value">Final-Year Project (FYDP)</span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span class="project-meta-label">Academic year</span>
+                        <span class="project-meta-value">2025–2026</span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span class="project-meta-label">Department</span>
+                        <span class="project-meta-value">Civil Engineering</span>
+                    </div>
+                    <div class="project-meta-item">
+                        <span class="project-meta-label">Institution</span>
+                        <span class="project-meta-value">NUST NICE (SCEE)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TEAM ===== -->
+        <section class="about-section">
+            <div class="about-section-head">
+                <h2 class="about-h2">The Team</h2>
+                <p class="about-hint">Four final-year students of Civil Engineering at NUST who designed, built, and validated every component of this DSS.</p>
+            </div>
+
+            <div class="team-grid">
+
+                <div class="team-card team-card-lead">
+                    <div class="team-avatar">HA</div>
+                    <h3 class="team-name">Haider Ali</h3>
+                    <p class="team-role">Team Lead · Website &amp; Full-Stack Development</p>
+                    <p class="team-blurb">
+                        Primary developer of this Decision Support System. Architected the eight-engine Python
+                        pipeline, implemented the CA-Markov spatial allocator, engineered the web stack (Leaflet
+                        raster overlays, Chart.js trajectories, MCDA ranking, MES-based cost estimator), and
+                        built every page you are navigating right now.
+                    </p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">AS</div>
+                    <h3 class="team-name">Abdullah Shamil</h3>
+                    <p class="team-role">Co-Investigator</p>
+                    <p class="team-blurb">
+                        Contributing author on data acquisition, hydrological modelling, and field-validation
+                        coordination with the Small Dams Organisation.
+                    </p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">MK</div>
+                    <h3 class="team-name">Muhammad Ahmad Khan</h3>
+                    <p class="team-role">Co-Investigator</p>
+                    <p class="team-blurb">
+                        Contributing author on climate-forcing analysis and evaporation modelling using Pakistan
+                        Meteorological Department station data.
+                    </p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">SA</div>
+                    <h3 class="team-name">Sirtaj Alam</h3>
+                    <p class="team-role">Co-Investigator</p>
+                    <p class="team-blurb">
+                        Contributing author on geospatial processing, watershed delineation, and NDBI-based
+                        urban-sprawl detection.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== SUPERVISOR ===== -->
+        <section class="about-section">
+            <div class="about-section-head">
+                <h2 class="about-h2">Academic Supervision</h2>
+                <p class="about-hint">Technical guidance, methodological rigour, and defence mentorship provided by the project supervisor.</p>
+            </div>
+
+            <div class="supervisor-card">
+                <div class="supervisor-avatar">HG</div>
+                <div class="supervisor-body">
+                    <h3 class="supervisor-name">Dr. Hamza Farooq Gabriel</h3>
+                    <p class="supervisor-role">Project Supervisor</p>
+                    <p class="supervisor-affiliation">
+                        NUST Institute of Civil Engineering (NICE) ·
+                        School of Civil and Environmental Engineering (SCEE) ·
+                        National University of Sciences and Technology
+                    </p>
+                    <p class="supervisor-blurb">
+                        The methodology and scope of this work reflect sustained supervisory input on remote-sensing
+                        hydrology, watershed modelling standards, and the professional conventions expected of a
+                        civil engineering final-year deliverable.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ACKNOWLEDGEMENTS ===== -->
+        <section class="about-section">
+            <div class="about-section-head">
+                <h2 class="about-h2">Acknowledgements</h2>
+                <p class="about-hint">The project was only possible because of data, access, and expertise generously shared by the following organisations.</p>
+            </div>
+
+            <div class="ack-grid">
+                <div class="ack-card">
+                    <div class="ack-icon">🌦️</div>
+                    <h3>Pakistan Meteorological Department (PMD)</h3>
+                    <p>
+                        For providing the daily temperature and precipitation station records that anchor the
+                        Hargreaves–Samani evaporation engine and the climate-forcing trajectories displayed
+                        across this DSS.
+                    </p>
+                </div>
+
+                <div class="ack-card">
+                    <div class="ack-icon">🏞️</div>
+                    <h3>Small Dams Organisation (SDO) — Rawal Dam</h3>
+                    <p>
+                        For engineering reference figures on Rawal Dam (design capacity, ISRIP 2000 survey
+                        volume, dead-storage threshold) and for contextual guidance on operational history
+                        and dam management.
+                    </p>
+                </div>
+
+                <div class="ack-card">
+                    <div class="ack-icon">🛰️</div>
+                    <h3>U.S. Geological Survey (USGS)</h3>
+                    <p>
+                        For open public-domain access to the Landsat 5 / 7 / 8 / 9 Surface Reflectance archive,
+                        which provides the 25-year continuous imagery backbone for the NDWI and NDBI analyses.
+                    </p>
+                </div>
+
+                <div class="ack-card">
+                    <div class="ack-icon">📐</div>
+                    <h3>NASA SRTM Mission</h3>
+                    <p>
+                        For the 30 m Shuttle Radar Topography Mission DEM used for watershed delineation,
+                        slope derivation, and the topographical sprawl ceiling in the CA-Markov allocator.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LIMITATIONS & FUTURE WORK ===== -->
+        <section class="about-section">
+            <div class="about-section-head">
+                <h2 class="about-h2">Honest Limitations &amp; Future Work</h2>
+                <p class="about-hint">Every model has boundaries. Naming ours is part of doing the work honestly.</p>
+            </div>
+
+            <div class="limit-grid">
+                <div class="limit-card">
+                    <h3>Known limitations</h3>
+                    <ul class="limit-list">
+                        <li>Landsat 30 m resolution undercounts village-scale and farmhouse-level development in peri-urban zones.</li>
+                        <li>Hargreaves–Samani is a fallback evapotranspiration model used because the PMD record does not consistently include radiation and wind data required by the full Penman–Monteith method.</li>
+                        <li>The 2088 baseline end-of-life is a point estimate. A probabilistic envelope with climate ensemble inputs would strengthen the forecast confidence bounds.</li>
+                        <li>The CA-Markov allocator does not model urban demolition or contraction — once a pixel is allocated to urban it remains urban for the simulation horizon.</li>
+                        <li>Cost scores in the MCDA are grounded in MES Rawalpindi 2-2025 rates for the intervention-specific cost estimator; policy complexity scores are literature-based relative estimates and are flagged as such on the Scenarios page.</li>
+                    </ul>
+                </div>
+
+                <div class="limit-card">
+                    <h3>Natural extensions</h3>
+                    <ul class="limit-list">
+                        <li>Integrate Sentinel-2 10 m imagery to capture village-scale sprawl the Landsat grid misses along Murree Road and Simly Road.</li>
+                        <li>Replace the single climate multiplier with CMIP6 regional climate model ensembles to produce storage-decline confidence intervals.</li>
+                        <li>Add a sensitivity-analysis module quantifying how EOL year shifts with each calibration constant (r, A, base sediment rate, trap efficiency).</li>
+                        <li>Build a fiscal-year phased-implementation module so the cost estimator can report capital outlay distributed across a realistic construction schedule rather than lump-sum.</li>
+                        <li>Connect the DSS to real-time PMD and SDO feeds so baseline forecasts continuously re-anchor as new observations arrive.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CONTACT ===== -->
+        <section class="about-section">
+            <div class="about-section-head">
+                <h2 class="about-h2">Contact</h2>
+                <p class="about-hint">For questions, collaborations, or defence-related correspondence.</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-body">
+                    <p class="contact-intro">
+                        Reach the team lead directly using the details below. Correspondence regarding academic
+                        collaboration, data access, or defence scheduling is welcome.
+                    </p>
+
+                    <div class="contact-lines">
+                        <!-- EDIT: to remove your phone from the public site, delete or comment out the single .contact-line block below -->
+                        <a href="tel:+923419347384" class="contact-line">
+                            <span class="contact-icon">📞</span>
+                            <span class="contact-text">
+                                <span class="contact-label">Phone</span>
+                                <span class="contact-value">+92 341 9347384</span>
+                            </span>
+                        </a>
+
+                        <a href="mailto:haiiderali.222@gmail.com" class="contact-line">
+                            <span class="contact-icon">✉️</span>
+                            <span class="contact-text">
+                                <span class="contact-label">Email</span>
+                                <span class="contact-value">haiiderali.222@gmail.com</span>
+                            </span>
+                        </a>
+
+                        <div class="contact-line contact-line-static">
+                            <span class="contact-icon">🏛️</span>
+                            <span class="contact-text">
+                                <span class="contact-label">Institution</span>
+                                <span class="contact-value">NUST NICE (SCEE), Islamabad, Pakistan</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CLOSING NOTE ===== -->
+        <section class="about-section">
+            <div class="closing-note">
+                <p>
+                    Thank you for taking the time to explore this work. It represents a full academic year of
+                    data acquisition, model calibration, software engineering, and careful validation against
+                    published literature and field data. If the DSS proves useful to any future dam-management
+                    or policy effort, the authors consider the project's purpose fully served.
+                </p>
+            </div>
+        </section>
+
     </main>
+
     <footer class="site-footer">
         <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
     </footer>
+
+    <script src="assets/js/data-loader.js"></script>
 </body>
 </html>
