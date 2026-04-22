@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scenarios · Rawal DSS</title>
+    <title>Scenario Ranking — Rawal DSS</title>
+    <meta name="description" content="Multi-criteria decision analysis ranking of all five mitigation pathways for Rawal Dam.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -26,14 +29,371 @@
             <a href="about.html" class="nav-link">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>Scenario Explorer</h1>
-            <p>This page will present the MCDA scenario comparison in Phase 7.</p>
-        </div>
+
+    <main class="scen-main">
+
+        <!-- ===== PAGE HEADER ===== -->
+        <section class="scen-header">
+            <p class="section-tag">MULTI-CRITERIA DECISION ANALYSIS</p>
+            <h1 class="scen-title">Which policy wins?</h1>
+            <p class="scen-sub">
+                Five pre-computed mitigation pathways ranked against four weighted criteria.
+                Adjust the weight sliders to reflect your priorities — the ranking, trajectory chart,
+                and recommendation update live.
+            </p>
+        </section>
+
+        <!-- ===== RANKED WINNER STRIP ===== -->
+        <section class="scen-ranked">
+            <h2 class="scen-h2">Live Ranking</h2>
+            <p class="scen-hint">Ordered by weighted MCDA score. Rank 1 = best under current weights.</p>
+            <div class="scen-rank-grid" id="rank-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- ===== WEIGHT SLIDERS + MCDA TABLE ===== -->
+        <section class="scen-mcda">
+            <div class="scen-weights">
+                <h2 class="scen-h2">Criterion Weights</h2>
+                <p class="scen-hint">Total weight always normalises to 100% across the four criteria.</p>
+
+                <div class="weight-block">
+                    <div class="weight-header">
+                        <span class="weight-label">Longevity — Years of dam life added</span>
+                        <span class="weight-value" id="w-longevity-val">40%</span>
+                    </div>
+                    <input type="range" class="weight-slider" id="w-longevity"
+                           min="0" max="100" step="5" value="40">
+                </div>
+
+                <div class="weight-block">
+                    <div class="weight-header">
+                        <span class="weight-label">Volume preservation — MCM preserved at 2088</span>
+                        <span class="weight-value" id="w-volume-val">30%</span>
+                    </div>
+                    <input type="range" class="weight-slider" id="w-volume"
+                           min="0" max="100" step="5" value="30">
+                </div>
+
+                <div class="weight-block">
+                    <div class="weight-header">
+                        <span class="weight-label">Implementation cost — Lower is better</span>
+                        <span class="weight-value" id="w-cost-val">15%</span>
+                    </div>
+                    <input type="range" class="weight-slider" id="w-cost"
+                           min="0" max="100" step="5" value="15">
+                </div>
+
+                <div class="weight-block">
+                    <div class="weight-header">
+                        <span class="weight-label">Policy complexity — Lower is simpler</span>
+                        <span class="weight-value" id="w-complexity-val">15%</span>
+                    </div>
+                    <input type="range" class="weight-slider" id="w-complexity"
+                           min="0" max="100" step="5" value="15">
+                </div>
+
+                <button class="scen-reset-btn" id="btn-reset-weights">Reset weights to defaults (40-30-15-15)</button>
+
+                <div class="scen-disclaimer">
+                    <strong>Note on scores:</strong> Longevity and volume-preservation metrics are
+                    computed directly from pipeline outputs. Cost and complexity scores are
+                    literature-based relative estimates (not site-specific costing studies).
+                </div>
+            </div>
+
+            <div class="scen-table-wrap">
+                <h2 class="scen-h2">MCDA Matrix</h2>
+                <p class="scen-hint">Raw scores 1-10 per criterion, multiplied by weights, summed to a weighted total.</p>
+
+                <div class="scen-table-scroll">
+                    <table class="scen-table" id="mcda-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Longevity</th>
+                                <th>Volume</th>
+                                <th>Cost</th>
+                                <th>Complexity</th>
+                                <th class="scen-total-col">Weighted Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mcda-tbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ENGINEERED COST ANALYSIS (Phase 7B) ===== -->
+        <section class="cost-section">
+            <div class="cost-header-row">
+                <div>
+                    <h2 class="scen-h2">Engineered Cost Analysis</h2>
+                    <p class="scen-hint">
+                        Adjust the engineering inputs below. Bill of Quantities and total project cost
+                        update live, and the MCDA cost score automatically re-ranks the scenarios above.
+                    </p>
+                </div>
+                <label class="cost-autosync">
+                    <input type="checkbox" id="cost-autosync" checked>
+                    <span>Auto-sync to MCDA ranking</span>
+                </label>
+            </div>
+
+            <div class="cost-grid">
+
+                <!-- CHECK DAM COST CALCULATOR (Scenario B) -->
+                <div class="cost-card">
+                    <div class="cost-card-head">
+                        <span class="cost-card-tag" style="background:#1e88e5">B</span>
+                        <h3>Check Dam Cascade</h3>
+                    </div>
+                    <p class="cost-card-sub">
+                        Sediment trap structures across primary tributaries. All rates from
+                        <strong>MES CSR Rawalpindi 2-2025</strong>. MRS composite rates include 20%
+                        contractor profit/overhead.
+                    </p>
+
+                    <div class="cost-inputs">
+                        <div class="cost-input">
+                            <label>Number of check dams</label>
+                            <input type="number" id="dam-count" value="50" min="1" max="500" step="1">
+                        </div>
+                        <div class="cost-input">
+                            <label>Dam type</label>
+                            <select id="dam-type">
+                                <option value="hybrid" selected>Hybrid (RCC + gabion + masonry)</option>
+                                <option value="rcc">RCC only</option>
+                                <option value="gabion">Gabion only</option>
+                                <option value="masonry">Stone masonry only</option>
+                            </select>
+                        </div>
+                        <div class="cost-input">
+                            <label>Height (m)</label>
+                            <input type="number" id="dam-height" value="3" min="1" max="8" step="0.5">
+                        </div>
+                        <div class="cost-input">
+                            <label>Crest length (m)</label>
+                            <input type="number" id="dam-crest" value="15" min="5" max="50" step="1">
+                        </div>
+                        <div class="cost-input">
+                            <label>Base width (m)</label>
+                            <input type="number" id="dam-base" value="2.5" min="1" max="6" step="0.25">
+                        </div>
+                        <div class="cost-input">
+                            <label>Top width (m)</label>
+                            <input type="number" id="dam-top" value="1" min="0.5" max="3" step="0.25">
+                        </div>
+                        <div class="cost-input">
+                            <label>Foundation depth (m)</label>
+                            <input type="number" id="dam-foundation" value="0.5" min="0.3" max="2" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="cost-boq-wrap">
+                        <table class="cost-boq" id="dam-boq">
+                            <thead>
+                                <tr>
+                                    <th>Item (per dam)</th>
+                                    <th>Qty</th>
+                                    <th>Unit</th>
+                                    <th>Rate (PKR)</th>
+                                    <th>Cost (PKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dam-boq-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="cost-summary">
+                        <div class="cost-summary-row">
+                            <span>Per-dam cost</span>
+                            <strong id="dam-per-cost">—</strong>
+                        </div>
+                        <div class="cost-summary-row">
+                            <span>Excavation volume (per dam)</span>
+                            <strong id="dam-exc-vol">—</strong>
+                        </div>
+                        <div class="cost-summary-row cost-summary-total">
+                            <span>Scenario B total</span>
+                            <strong id="dam-total-cost">—</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AFFORESTATION COST CALCULATOR (Scenario D) -->
+                <div class="cost-card">
+                    <div class="cost-card-head">
+                        <span class="cost-card-tag" style="background:#43a047">D</span>
+                        <h3>Afforestation Program</h3>
+                    </div>
+                    <p class="cost-card-sub">
+                        Community forestry reclaim. Sapling and labour unit rates are
+                        <strong>TBTTP-aligned</strong> (Ten Billion Tree Tsunami Programme, Gov. of
+                        Pakistan), not MES. All editable.
+                    </p>
+
+                    <div class="cost-inputs">
+                        <div class="cost-input">
+                            <label>Reclaim rate (acres/year)</label>
+                            <input type="number" id="aff-acres" value="300" min="50" max="1000" step="10">
+                        </div>
+                        <div class="cost-input">
+                            <label>Program duration (years)</label>
+                            <input type="number" id="aff-years" value="10" min="3" max="30" step="1">
+                        </div>
+                        <div class="cost-input">
+                            <label>Saplings per acre</label>
+                            <input type="number" id="aff-density" value="450" min="200" max="800" step="25">
+                        </div>
+                        <div class="cost-input">
+                            <label>Sapling unit cost (PKR)</label>
+                            <input type="number" id="aff-sapling" value="60" min="20" max="200" step="5">
+                        </div>
+                        <div class="cost-input">
+                            <label>Planting labour (PKR/sapling)</label>
+                            <input type="number" id="aff-labour" value="40" min="15" max="150" step="5">
+                        </div>
+                        <div class="cost-input">
+                            <label>3-yr maintenance (PKR/sapling)</label>
+                            <input type="number" id="aff-maintenance" value="75" min="25" max="250" step="5">
+                        </div>
+                        <div class="cost-input">
+                            <label>Site prep (PKR/acre)</label>
+                            <input type="number" id="aff-siteprep" value="10000" min="2000" max="50000" step="500">
+                        </div>
+                        <div class="cost-input">
+                            <label>Overhead (%)</label>
+                            <input type="number" id="aff-overhead" value="20" min="0" max="35" step="1">
+                        </div>
+                    </div>
+
+                    <div class="cost-boq-wrap">
+                        <table class="cost-boq" id="aff-boq">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Basis</th>
+                                    <th>Unit rate</th>
+                                    <th>Cost (PKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="aff-boq-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="cost-summary">
+                        <div class="cost-summary-row">
+                            <span>Total area reclaimed</span>
+                            <strong id="aff-total-acres">—</strong>
+                        </div>
+                        <div class="cost-summary-row">
+                            <span>Total saplings</span>
+                            <strong id="aff-total-saplings">—</strong>
+                        </div>
+                        <div class="cost-summary-row">
+                            <span>Cost per acre</span>
+                            <strong id="aff-per-acre">—</strong>
+                        </div>
+                        <div class="cost-summary-row cost-summary-total">
+                            <span>Scenario D total</span>
+                            <strong id="aff-total-cost">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMBINED COST SUMMARY: A, C, E derived -->
+            <div class="cost-overview">
+                <h3 class="cost-overview-title">All-scenario cost roll-up</h3>
+                <p class="scen-hint">
+                    A has no direct cost. C is a fixed policy-instrument estimate (PKR 50M
+                    enforcement framework — editable). E combines B + C + D with 10%
+                    multi-agency coordination overhead.
+                </p>
+
+                <div class="cost-c-editor">
+                    <label>Scenario C enforcement cost (PKR millions):</label>
+                    <input type="number" id="scen-c-cost" value="50" min="5" max="500" step="5">
+                    <span class="cost-c-hint">Policy instrument: regulatory framework + monitoring</span>
+                </div>
+
+                <div class="cost-rollup-grid" id="cost-rollup-grid"></div>
+            </div>
+
+            <div class="cost-disclaimer">
+                <strong>Source integrity:</strong>
+                Every RCC, steel, excavation, masonry, gabion, and sand rate is pulled directly
+                from the MES Composite Schedule of Rates, Rawalpindi 2-2025. Sapling, planting
+                labour, and nursery maintenance rates are aligned with the Government of
+                Pakistan's Ten Billion Tree Tsunami Programme (TBTTP) unit-cost structure, scaled
+                to 2025. No rate in this calculator is fabricated.
+            </div>
+        </section>
+        <!-- ===== COMPARATIVE TRAJECTORY CHART ===== -->
+        <section class="scen-chart-section">
+            <div class="scen-chart-header-row">
+                <div>
+                    <h2 class="scen-h2">Comparative Trajectories</h2>
+                    <p class="scen-hint">Storage decline over time for all five scenarios. Toggle to compare.</p>
+                </div>
+                <div class="scen-chart-toggles" id="chart-toggles">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <div class="scen-chart-container">
+                <canvas id="scen-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- ===== RECOMMENDATION PANEL ===== -->
+        <section class="scen-recommendation">
+            <h2 class="scen-h2">Decision Summary</h2>
+            <div class="reco-split">
+                <div class="reco-neutral">
+                    <p class="reco-label">TOP-RANKED SCENARIO</p>
+                    <p class="reco-rank" id="reco-neutral-id">—</p>
+                    <p class="reco-name" id="reco-neutral-name">—</p>
+                    <div class="reco-metrics">
+                        <div class="reco-metric">
+                            <span>EOL year</span>
+                            <strong id="reco-neutral-eol">—</strong>
+                        </div>
+                        <div class="reco-metric">
+                            <span>Years gained</span>
+                            <strong id="reco-neutral-gained">—</strong>
+                        </div>
+                        <div class="reco-metric">
+                            <span>Weighted score</span>
+                            <strong id="reco-neutral-score">—</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="reco-explicit">
+                    <p class="reco-label">RECOMMENDATION</p>
+                    <p class="reco-text" id="reco-explicit-text">
+                        Computing recommendation from current weights...
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DETAILED SCENARIO CARDS ===== -->
+        <section class="scen-details">
+            <h2 class="scen-h2">Scenario Details</h2>
+            <p class="scen-hint">Pipeline-derived numbers plus implementation summaries.</p>
+            <div class="scen-cards-grid" id="detail-cards">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
     </main>
-    <footer class="site-footer">
-        <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
-    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/scenarios.js"></script>
 </body>
 </html>
