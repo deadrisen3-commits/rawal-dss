@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Methodology · Rawal DSS</title>
+    <meta name="description" content="Engine-by-engine methodology walkthrough for the Rawal Dam Decision Support System. Remote sensing, hydrology, sprawl modelling, CA-Markov forecasting, and mitigation scenarios.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- MathJax for proper equation rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
 </head>
 <body>
     <header class="top-bar">
@@ -26,14 +41,405 @@
             <a href="about.html" class="nav-link">About</a>
         </nav>
     </header>
-    <main class="placeholder-main">
-        <div class="placeholder-card">
-            <h1>Methodology</h1>
-            <p>This page will document the full technical methodology in Phase 8.</p>
-        </div>
+
+    <main class="meth-layout">
+
+        <!-- LEFT: sticky table of contents -->
+        <aside class="meth-toc">
+            <p class="meth-toc-label">METHODOLOGY</p>
+            <nav>
+                <a href="#overview" class="toc-link active">Overview</a>
+                <a href="#data-sources" class="toc-link">Data Sources</a>
+                <a href="#e1" class="toc-link">Engine 1 · Lake Extraction</a>
+                <a href="#e2" class="toc-link">Engine 2 · Evaporation</a>
+                <a href="#e3" class="toc-link">Engine 3 · Urban Sprawl</a>
+                <a href="#e4" class="toc-link">Engine 4 · Storage Decline</a>
+                <a href="#e5" class="toc-link">Engine 5 · CA-Markov</a>
+                <a href="#e6" class="toc-link">Engine 6 · Mitigation Scenarios</a>
+                <a href="#e7" class="toc-link">Engine 7 · Report Generator</a>
+                <a href="#e8" class="toc-link">Engine 8 · Web Export</a>
+                <a href="#validation" class="toc-link">Validation</a>
+                <a href="#limitations" class="toc-link">Limitations</a>
+                <a href="#references" class="toc-link">References</a>
+            </nav>
+
+            <div class="meth-toc-status">
+                <p class="meth-toc-label">PIPELINE STATUS</p>
+                <div id="meth-status-pill" class="status-pill">Loading...</div>
+            </div>
+        </aside>
+
+        <!-- RIGHT: scrolling content -->
+        <section class="meth-content">
+
+            <section class="meth-header">
+                <p class="section-tag">TECHNICAL METHODOLOGY</p>
+                <h1 class="meth-h1">How the Decision Support System computes everything it shows</h1>
+                <p class="meth-lead">
+                    This page documents the eight-engine Python pipeline that underpins every
+                    number, map, and forecast on this site. The pipeline runs end-to-end from
+                    raw Landsat imagery and meteorological station data to a calibrated CA-Markov
+                    land-use forecaster and five policy-scenario projections. Every equation,
+                    threshold, and calibration constant is listed so the methodology is
+                    reproducible and defensible.
+                </p>
+            </section>
+
+            <!-- ===== OVERVIEW ===== -->
+            <article class="meth-article" id="overview">
+                <h2>Overview</h2>
+                <p>
+                    The Rawal Dam Decision Support System answers one core question: given
+                    observed hydrological, climatic, and land-use trends, when does the
+                    reservoir cross its dead-storage threshold, and how much of that collapse
+                    can be deferred by each candidate policy?
+                </p>
+                <p>
+                    The pipeline is structured as eight sequential engines. Each engine
+                    consumes the outputs of its predecessors, so the whole workflow runs
+                    top-to-bottom in a single Jupyter notebook and produces (a) a 10-page
+                    executive PDF report, (b) a structured JSON file that powers every
+                    page of this website, and (c) a folder of georeferenced composite
+                    overlays for the interactive map.
+                </p>
+
+                <div class="engine-flow">
+                    <div class="flow-step"><span class="flow-num">1</span><span>Lake Area Extraction (NDWI)</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">2</span><span>Evaporation (Hargreaves-Samani)</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">3</span><span>Urban Sprawl (NDBI)</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">4</span><span>Storage Decline Engine</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">5</span><span>CA-Markov Forecaster</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">6</span><span>Mitigation Scenarios A–E</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">7</span><span>PDF Report</span></div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step"><span class="flow-num">8</span><span>Web Export</span></div>
+                </div>
+            </article>
+
+            <!-- ===== DATA SOURCES ===== -->
+            <article class="meth-article" id="data-sources">
+                <h2>Data Sources</h2>
+                <p>Every input used by the pipeline is from an authoritative, openly-documented source. No synthetic data, no imputation beyond standard gap-filling.</p>
+
+                <div class="data-table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Provider</th>
+                                <th>Resolution / Frequency</th>
+                                <th>Used by Engine</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Landsat 5, 7, 8, 9 Surface Reflectance (Tier 1)</td>
+                                <td>USGS Earth Explorer</td>
+                                <td>30 m · annual composites</td>
+                                <td>1, 3</td>
+                            </tr>
+                            <tr>
+                                <td>Daily min/max temperature, precipitation</td>
+                                <td>Pakistan Meteorological Department (PMD)</td>
+                                <td>Station data · daily</td>
+                                <td>2, 4</td>
+                            </tr>
+                            <tr>
+                                <td>Rawal Dam capacity &amp; dead-storage figures</td>
+                                <td>Small Dams Organisation (SDO), Rawalpindi</td>
+                                <td>Engineering reference values</td>
+                                <td>4, 6</td>
+                            </tr>
+                            <tr>
+                                <td>Watershed &amp; lake polygons</td>
+                                <td>Delineated from SRTM DEM + manual QA</td>
+                                <td>Vector polygons (WGS84)</td>
+                                <td>1, 3, 5, 7</td>
+                            </tr>
+                            <tr>
+                                <td>Slope raster</td>
+                                <td>SRTM 30 m DEM · computed in QGIS</td>
+                                <td>30 m</td>
+                                <td>5, 6</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- ===== ENGINE 1 ===== -->
+            <article class="meth-article" id="e1">
+                <h2>Engine 1 · Lake Surface Area Extraction</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> measure how much of Rawal Lake's open-water surface area has been lost per year, 2000–2024, as a proxy for effective storage loss to sedimentation.</p>
+
+                <h3>Method</h3>
+                <p>For each year in the analysis window, the script pulls the cloud-minimised Landsat Surface Reflectance composite, crops to the lake polygon, and computes the Normalised Difference Water Index:</p>
+
+                <div class="equation">
+                    $$ \text{NDWI} = \frac{\rho_{\text{Green}} - \rho_{\text{NIR}}}{\rho_{\text{Green}} + \rho_{\text{NIR}}} $$
+                </div>
+
+                <p>A pixel is classified as open water when NDWI exceeds a per-year adaptive threshold calibrated from the distribution's upper tail (typically in the range 0.1–0.3 depending on turbidity and atmospheric conditions). Classified pixels are counted and multiplied by the Landsat pixel footprint (30 m × 30 m = 900 m²) to yield surface area in square metres, then converted to acres.</p>
+
+                <h3>Output</h3>
+                <p><code>historical.water_area_acres[]</code> — one value per year, written to <code>rawal_data.json</code>. This array powers the Dashboard's Hydrology tab and anchors the volumetric calculation in Engine 4.</p>
+            </article>
+
+            <!-- ===== ENGINE 2 ===== -->
+            <article class="meth-article" id="e2">
+                <h2>Engine 2 · Evaporation (Hargreaves–Samani)</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> estimate annual evaporative loss from the lake surface using only temperature data (which the PMD station provides reliably) rather than Penman-Monteith (which needs radiation and wind data we don't have on a consistent basis).</p>
+
+                <h3>Method</h3>
+                <p>Daily reference evapotranspiration is computed via the Hargreaves-Samani formula:</p>
+
+                <div class="equation">
+                    $$ ET_o = 0.0023 \cdot R_a \cdot (T_{\text{mean}} + 17.8) \cdot \sqrt{T_{\max} - T_{\min}} $$
+                </div>
+
+                <p>where $R_a$ is extraterrestrial radiation (computed from latitude and Julian day), and temperatures are in °C. $ET_o$ is then scaled to open-water evaporation $E_{\text{lake}}$ by a pan coefficient of approximately 1.05 (open water evaporates slightly faster than reference grass).</p>
+
+                <p>Daily values are summed to an annual total, then multiplied by the year's lake surface area (from Engine 1) to convert depth (mm) to volume (MCM).</p>
+
+                <h3>Why Hargreaves-Samani rather than Penman-Monteith</h3>
+                <p>Penman-Monteith is the FAO-56 gold standard but requires net radiation, wind speed, and humidity at the station. PMD's Islamabad and Rawalpindi stations do not publish all of these consistently across the 25-year window. Hargreaves-Samani requires only $T_{\min}$ and $T_{\max}$, which are available continuously, and it is accepted by FAO-56 as a fallback when complete data is unavailable.</p>
+            </article>
+
+            <!-- ===== ENGINE 3 ===== -->
+            <article class="meth-article" id="e3">
+                <h2>Engine 3 · Urban Sprawl Detection (NDBI)</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> identify which pixels inside the watershed converted from non-urban to urban between 2000 and the analysis year.</p>
+
+                <h3>Method</h3>
+                <p>The Normalised Difference Built-up Index is computed per year from Landsat SWIR and NIR bands:</p>
+
+                <div class="equation">
+                    $$ \text{NDBI} = \frac{\rho_{\text{SWIR}} - \rho_{\text{NIR}}}{\rho_{\text{SWIR}} + \rho_{\text{NIR}}} $$
+                </div>
+
+                <p>NDBI is normalised per year to the 2nd–98th percentile range to produce a bounded [0, 1] signal that is robust to atmospheric differences between acquisition dates. Two thresholds are then applied:</p>
+
+                <ul class="meth-list">
+                    <li><strong>Core urban (2000 baseline):</strong> pixels with normalised NDBI &gt; 0.85 are tagged as already-built in the year 2000. This establishes the pre-analysis urban footprint.</li>
+                    <li><strong>New sprawl (per year):</strong> pixels where the change in normalised NDBI between 2000 and the analysis year exceeds $\Delta\text{NDBI} &gt; 0.30$ are classified as newly-urbanised.</li>
+                </ul>
+
+                <p>The cumulative sprawl mask is the union of all per-year new-sprawl masks. Acreage is computed as pixel count × 900 m² ÷ 4046.86.</p>
+
+                <h3>Why two thresholds</h3>
+                <p>A single absolute NDBI cut would over-count bare rock and dry ridges in the upper Margallas (which have NDBI signatures similar to concrete). Requiring a <em>change</em> of ≥ 0.30 above a pixel's 2000 baseline ensures the pipeline only counts genuine transitions, not static bare surfaces.</p>
+
+                <h3>Calibration against ground truth</h3>
+                <p>The 2024 absolute urban total (17,599 acres, or 26.3 % of the 67,021-acre watershed) was cross-checked against published Rawal catchment LULC studies (2012 baseline of ~15 % built-up) and found consistent with extrapolated 2024 urbanisation for the Islamabad fringe.</p>
+            </article>
+
+            <!-- ===== ENGINE 4 ===== -->
+            <article class="meth-article" id="e4">
+                <h2>Engine 4 · Geometric Storage Decline</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> convert observed surface-area loss (Engine 1) plus urbanisation (Engine 3) into a physically-defensible storage-decline rate, then calibrate a forward projector.</p>
+
+                <h3>The core relationship</h3>
+                <p>Two independent anchor points define the storage-decline line:</p>
+                <ul class="meth-list">
+                    <li>ISRIP 2000 measured volume: <strong>46.12 MCM</strong> (field survey of record)</li>
+                    <li>Original design capacity: <strong>58.59 MCM</strong> (commissioning, 1962)</li>
+                    <li>Dead storage threshold: <strong>5.30 MCM</strong> (end-of-life condition)</li>
+                </ul>
+
+                <p>Annual storage is reconstructed for each year in the analysis window by applying an unforced geometric relationship between surface-area loss and volume loss, calibrated so the 2000 and 2024 endpoints reproduce observed values.</p>
+
+                <h3>The sediment multiplier</h3>
+                <p>The base sediment loading rate is modulated by a sprawl multiplier that captures the physical reality that more built-up watershed surface means more runoff, more erosion, more sediment transport:</p>
+
+                <div class="equation">
+                    $$ \Delta V_{\text{year}} = r_{\text{base}} \cdot (1 + f_{\text{transformed}}) \cdot m_{\text{climate}} $$
+                </div>
+
+                <p>where:</p>
+                <ul class="meth-list">
+                    <li>$r_{\text{base}} = 0.3282$ MCM/yr — base sediment rate calibrated against 2000–2024 observed decline</li>
+                    <li>$f_{\text{transformed}} = \dfrac{\text{new sprawl acres since 2000}}{\text{total watershed acres}}$</li>
+                    <li>$m_{\text{climate}} = 1.05$ — climate multiplier accounting for +5 % precipitation trend in regional projections</li>
+                </ul>
+
+                <p>Under Scenario A (Business-As-Usual) this equation run forward year-by-year from 2024 until storage crosses the 5.3 MCM dead-storage threshold, which the pipeline computes as the year <strong>2088</strong>. That is the baseline end-of-life used throughout the DSS.</p>
+            </article>
+
+            <!-- ===== ENGINE 5 ===== -->
+            <article class="meth-article" id="e5">
+                <h2>Engine 5 · CA-Markov Land-Use Forecaster</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> project <em>where</em> future urban growth will fall spatially, not just <em>how much</em>.</p>
+
+                <h3>The logistic demand curve</h3>
+                <p>Aggregate urban demand (in acres) is governed by a three-parameter logistic fit to the 2000–2024 observed sprawl series:</p>
+
+                <div class="equation">
+                    $$ U(t) = \frac{K}{1 + A \cdot e^{-r \cdot t}} $$
+                </div>
+
+                <p>where $t$ is years since 2000 and:</p>
+                <ul class="meth-list">
+                    <li>$K = 35{,}000$ acres — carrying capacity (topographical sprawl ceiling, pixels with slope ≤ 15°)</li>
+                    <li>$A = 5.3484$ — shape parameter from nonlinear least-squares fit</li>
+                    <li>$r = 0.07034$ — growth rate from the same fit</li>
+                </ul>
+
+                <h3>The spatial allocation — Moore neighbourhood with slope weighting</h3>
+                <p>Each year's new urban demand is allocated pixel-by-pixel using a Cellular Automata rule with a Moore neighbourhood (8 nearest neighbours):</p>
+                <ol class="meth-list meth-list-num">
+                    <li>Compute a transition-potential map: for every non-urban pixel, count how many of its 8 neighbours are already urban (the Moore kernel).</li>
+                    <li>Weight the potential by inverse slope (steeper = less likely to urbanise).</li>
+                    <li>Apply a Kappa-boost factor that rewards pixels near the current urban frontier, accelerating realistic edge-expansion.</li>
+                    <li>Rank all candidate pixels and allocate the year's demand to the top-ranked N pixels (where N is the acres demanded ÷ 0.222 acres/pixel).</li>
+                </ol>
+
+                <h3>Why this beats naive logistic</h3>
+                <p>A pure demand model tells you total sprawl but not where it goes. A pure CA model over-clusters. The combination — demand driven by logistic, spatial allocation driven by slope-weighted neighbourhood — reproduces the real observed pattern of sprawl advancing valley-by-valley along road corridors while avoiding steep slopes.</p>
+            </article>
+
+            <!-- ===== ENGINE 6 ===== -->
+            <article class="meth-article" id="e6">
+                <h2>Engine 6 · Mitigation Scenarios</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> quantify the end-of-life (EOL) year and volume preserved under each of five candidate policy pathways.</p>
+
+                <div class="scen-table-methodology">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Intervention</th>
+                                <th>EOL year</th>
+                                <th>Years gained</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="color:#e53935">A</strong></td>
+                                <td>Business As Usual</td>
+                                <td>No action. Full unmitigated trajectory.</td>
+                                <td>2088</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color:#1e88e5">B</strong></td>
+                                <td>Check Dam Cascades</td>
+                                <td>25 % sediment trap efficiency via engineered check dams across tributaries.</td>
+                                <td>2107</td>
+                                <td>+19</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color:#fb8c00">C</strong></td>
+                                <td>Strict Zoning</td>
+                                <td>3 km lake buffer + 7° slope cap on new development.</td>
+                                <td>2091</td>
+                                <td>+3</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color:#43a047">D</strong></td>
+                                <td>Biological Afforestation</td>
+                                <td>300 acres/year of watershed reforestation.</td>
+                                <td>2096</td>
+                                <td>+8</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color:#8e24aa">E</strong></td>
+                                <td>Ultimate Hybrid Policy</td>
+                                <td>All three measures combined.</td>
+                                <td>2130</td>
+                                <td>+42</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>How each intervention modifies the sediment equation</h3>
+                <ul class="meth-list">
+                    <li><strong>Check dams (B, E)</strong> — multiply annual $\Delta V$ by $(1 - \eta_{\text{trap}})$ where $\eta_{\text{trap}} = 0.25$.</li>
+                    <li><strong>Zoning (C, E)</strong> — in the CA-Markov allocator, pixels inside the buffer or above slope cap are excluded from the candidate pool, reducing realised sprawl relative to logistic demand.</li>
+                    <li><strong>Afforestation (D, E)</strong> — reclaim acres accumulate annually and subtract from the effective transformed fraction $f_{\text{transformed}}$ in the sprawl multiplier.</li>
+                </ul>
+
+                <h3>An honest note about afforestation</h3>
+                <p>In this pipeline, afforestation reclaims <em>previously non-urban degraded land</em> — it does not demolish existing concrete. This is the realistic assumption for policy modelling in a live urbanising watershed. The Scenario D mask therefore shows new forest cover filling in bare ground, not replacing Bani Gala or Bharakahu.</p>
+            </article>
+
+            <!-- ===== ENGINE 7 ===== -->
+            <article class="meth-article" id="e7">
+                <h2>Engine 7 · Executive PDF Report</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> produce a 10-page decision-ready document summarising every output above.</p>
+
+                <p>Engine 7 consumes the in-memory outputs of Engines 1–6 and renders them using matplotlib with a custom colour palette (forest <code>#c8e6c9</code>, urban <code>#555555</code>, lake <code>#1e88e5</code>, reclaimed <code>#76ff03</code>). Each scenario page applies a peri-urban correction — the already-built 2024 footprint is dilated by 4 pixels along the lake buffer before rendering, so maps never falsely show a lakeshore stripped of its real concrete.</p>
+
+                <p>The output is <code>RAWAL_FINAL_MASTER_REPORT.pdf</code>, available on the <a href="downloads.html">Downloads page</a>.</p>
+            </article>
+
+            <!-- ===== ENGINE 8 ===== -->
+            <article class="meth-article" id="e8">
+                <h2>Engine 8 · Web Export</h2>
+                <p class="meth-purpose"><strong>Purpose:</strong> render every pipeline output in formats this website can consume.</p>
+
+                <ul class="meth-list">
+                    <li><code>data/core/rawal_data.json</code> — the full numeric record: metadata, historical arrays, watershed totals, logistic coefficients, forecast baseline, and the five scenario trajectories.</li>
+                    <li><code>data/overlays/*.png</code> — composite raster overlays matching the PDF's visual identity. Each pixel outside the watershed polygon is fully transparent so the maps sit cleanly over the Leaflet basemap. Bounds are reprojected from UTM to WGS84 by reprojecting the four corners individually, avoiding the safety-padding inflation that <code>rasterio.transform_bounds</code> adds.</li>
+                    <li><code>data/geo/*.geojson</code> — watershed and lake vector boundaries.</li>
+                    <li><code>data/manifest.json</code> — an index of every exported asset for the website to query.</li>
+                </ul>
+
+                <h3>2024 display reconciliation</h3>
+                <p>The cumulative sprawl mask aggregated inside Engine 3 can exhibit shape-alignment gaps where year-to-year Landsat crop rectangles diverge by a few pixels. This does not affect the CA-Markov scenario outputs (which rebuild their own grid) but can understate the 2024 <em>visual</em> map. Engine 8 therefore re-derives the 2024 display mask directly from the 2024 Landsat NDBI at a 0.80 threshold, unioned with the Phase-3 baseline, producing a clean display value. The numeric thesis value (17,599 acres, 26.3 %) inside <code>rawal_data.json</code> is unchanged.</p>
+            </article>
+
+            <!-- ===== VALIDATION ===== -->
+            <article class="meth-article" id="validation">
+                <h2>Validation</h2>
+                <p>Every scenario output was validated against two independent checks:</p>
+                <ol class="meth-list meth-list-num">
+                    <li><strong>Numerical validation</strong> — the interactive Simulator on this site implements the same sediment-accounting equations in JavaScript. Reproducing each scenario's slider settings recovers its EOL year within ±2 years (±5 for the hybrid), confirming the math engine is not specific to the Python implementation.</li>
+                    <li><strong>Spatial validation</strong> — the 2000 and 2024 urban footprints were visually compared against Google Earth historical imagery and published Rawal LULC studies (2012 baseline of ~15 % built-up). The Margalla ridge correctly shows minimal urbanisation; the Bani Gala–Bharakahu–Murree Road corridor correctly shows heavy development.</li>
+                </ol>
+            </article>
+
+            <!-- ===== LIMITATIONS ===== -->
+            <article class="meth-article" id="limitations">
+                <h2>Limitations &amp; honest caveats</h2>
+                <ul class="meth-list">
+                    <li><strong>Landsat 30 m resolution</strong> undercounts village-scale development. Adding Sentinel-2 10 m data would pick up roughly 15–25 % more peri-urban pixels in the Murree Road and Simly Road corridors.</li>
+                    <li><strong>Hargreaves-Samani</strong> is a fallback ET model. Where full Penman-Monteith data exist, that should be preferred.</li>
+                    <li><strong>The 2088 baseline EOL</strong> is a point estimate, not a confidence interval. A Monte Carlo envelope would be a natural extension.</li>
+                    <li><strong>Cost and complexity scores in the MCDA</strong> — longevity and volume metrics are pipeline-derived, but cost and complexity are literature-based relative estimates. The Cost Estimator module on the Scenarios page provides a bottom-up alternative using MES Rawalpindi 2-2025 rates.</li>
+                    <li><strong>CA-Markov does not model demolition</strong> — urban pixels, once allocated, remain urban for the simulation horizon. Afforestation only reclaims non-urban degraded land.</li>
+                </ul>
+            </article>
+
+            <!-- ===== REFERENCES ===== -->
+            <article class="meth-article" id="references">
+                <h2>Key references</h2>
+                <ol class="meth-list meth-list-num meth-refs">
+                    <li>McFeeters, S. K. (1996). The use of the Normalized Difference Water Index (NDWI) in the delineation of open water features. <em>International Journal of Remote Sensing</em>, 17(7), 1425–1432.</li>
+                    <li>Zha, Y., Gao, J., &amp; Ni, S. (2003). Use of normalized difference built-up index in automatically mapping urban areas from TM imagery. <em>International Journal of Remote Sensing</em>, 24(3), 583–594.</li>
+                    <li>Hargreaves, G. H., &amp; Samani, Z. A. (1985). Reference crop evapotranspiration from temperature. <em>Applied Engineering in Agriculture</em>, 1(2), 96–99.</li>
+                    <li>Allen, R. G., Pereira, L. S., Raes, D., &amp; Smith, M. (1998). <em>FAO-56 Crop Evapotranspiration Guidelines</em>. Food and Agriculture Organization.</li>
+                    <li>Pontius, R. G., &amp; Malanson, J. (2005). Comparison of the structure and accuracy of two land change models. <em>International Journal of Geographical Information Science</em>, 19(2), 243–265.</li>
+                    <li>Government of Pakistan (2025). <em>Military Engineer Services Composite Schedule of Rates — Rawalpindi District, 2-2025</em>.</li>
+                </ol>
+            </article>
+
+        </section>
+
     </main>
+
     <footer class="site-footer">
         <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
     </footer>
+
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/methodology.js"></script>
 </body>
 </html>

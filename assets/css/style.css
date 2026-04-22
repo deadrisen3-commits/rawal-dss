@@ -2428,3 +2428,305 @@ html, body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ============================================================
+   METHODOLOGY PAGE (Phase 8A)
+   ============================================================ */
+
+.meth-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 65px);
+}
+
+/* ---------- Sticky TOC (left) ---------- */
+.meth-toc {
+    position: sticky;
+    top: 65px;
+    align-self: start;
+    height: calc(100vh - 65px);
+    padding: var(--space-xl) var(--space-lg);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.meth-toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.meth-toc nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.toc-link {
+    display: block;
+    padding: 8px 12px;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    border-radius: 0 4px 4px 0;
+    transition: all 0.15s ease;
+}
+
+.toc-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+}
+
+.toc-link.active {
+    color: var(--accent-teal);
+    border-left-color: var(--accent-teal);
+    background: rgba(20, 184, 166, 0.06);
+    font-weight: 600;
+}
+
+.meth-toc-status {
+    margin-top: auto;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Content (right) ---------- */
+.meth-content {
+    padding: var(--space-xl) var(--space-2xl);
+    max-width: 860px;
+}
+
+.meth-header {
+    padding-bottom: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.meth-h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: var(--space-sm) 0 var(--space-md);
+    line-height: 1.15;
+}
+
+.meth-lead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.meth-article {
+    padding: var(--space-xl) 0;
+    border-bottom: 1px solid var(--border-color);
+    scroll-margin-top: 80px;
+}
+
+.meth-article:last-child {
+    border-bottom: none;
+}
+
+.meth-article h2 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.01em;
+}
+
+.meth-article h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    margin: var(--space-lg) 0 var(--space-sm);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+}
+
+.meth-article p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    font-size: 0.98rem;
+    margin-bottom: var(--space-md);
+}
+
+.meth-article p strong {
+    color: var(--text-primary);
+}
+
+.meth-article code {
+    font-family: var(--font-mono);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--accent-teal);
+}
+
+.meth-article a {
+    color: var(--accent-teal);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.meth-purpose {
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--accent-teal);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: var(--space-lg) !important;
+}
+
+.meth-list {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    padding-left: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.meth-list li {
+    margin-bottom: var(--space-sm);
+}
+
+.meth-list li strong,
+.meth-list li em {
+    color: var(--text-primary);
+}
+
+.meth-list-num {
+    list-style: decimal;
+}
+
+.meth-refs {
+    font-size: 0.88rem;
+}
+
+.meth-refs li {
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+}
+
+/* ---------- Engine-flow diagram ---------- */
+.engine-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-top: var(--space-lg);
+}
+
+.flow-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 6px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.flow-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--accent-teal);
+    color: var(--bg-primary);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+}
+
+.flow-arrow {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* ---------- Equations ---------- */
+.equation {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--space-lg);
+    margin: var(--space-md) 0;
+    overflow-x: auto;
+    text-align: center;
+}
+
+/* ---------- Data tables ---------- */
+.data-table-wrap,
+.scen-table-methodology {
+    overflow-x: auto;
+    margin: var(--space-md) 0;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.data-table thead th {
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table tbody td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.data-table tbody td strong {
+    color: var(--text-primary);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .meth-layout {
+        grid-template-columns: 1fr;
+    }
+    .meth-toc {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .meth-content {
+        padding: var(--space-lg);
+    }
+    .meth-h1 {
+        font-size: 1.65rem;
+    }
+    .engine-flow {
+        gap: var(--space-xs);
+    }
+}
