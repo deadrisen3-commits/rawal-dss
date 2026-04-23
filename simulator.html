@@ -102,6 +102,21 @@
                 <button class="sim-preset-btn" id="btn-preset-e">Load Hybrid Policy Preset</button>
             </section>
 
+            <section class="sim-block">
+                <div class="sim-toggle-row">
+                    <label class="sim-toggle-label">
+                        <input type="checkbox" id="toggle-uncertainty" checked>
+                        <span class="sim-toggle-text">Show uncertainty envelope</span>
+                    </label>
+                </div>
+                <p class="sim-toggle-desc">
+                    Runs 1,000 Monte Carlo simulations with jittered parameters
+                    (±10% sediment rate, ±8% growth rate, ±5% climate, ±3pp trap
+                    efficiency) and displays the 90% confidence envelope around
+                    the median trajectory. Uncheck for single-run deterministic view.
+                </p>
+            </section>
+
             <section class="sim-block sim-note">
                 <h3 class="sim-note-title">Validation note</h3>
                 <p class="sim-note-body">
@@ -120,6 +135,7 @@
                 <div class="sim-headline-eol">
                     <p class="sim-headline-label">Projected End of Life</p>
                     <p class="sim-headline-value" id="out-eol">2088</p>
+                    <p class="sim-headline-ci" id="out-eol-ci">90% CI: —</p>
                 </div>
                 <div class="sim-headline-metrics">
                     <div class="sim-metric">
@@ -141,8 +157,9 @@
                 <div class="sim-chart-header">
                     <h2>Storage decline trajectory</h2>
                     <p class="sim-chart-sub">
-                        Red dashed: Business-as-Usual baseline. Teal solid: your custom
-                        scenario. Black: dead-storage threshold (reservoir failure).
+                        Red dashed: Business-as-Usual baseline. Teal solid line: median
+                        of 1,000 Monte Carlo runs of your custom scenario. Shaded teal
+                        band: 90% confidence envelope. Black: dead-storage threshold.
                     </p>
                 </div>
                 <div class="sim-chart-container">
