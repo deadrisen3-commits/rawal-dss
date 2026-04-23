@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- Dark gradient background -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="tealFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="600" height="630" fill="url(#tealFade)"/>
+
+  <!-- Subtle dashed boundary echo, top-left -->
+  <path d="M 70 70 L 340 70 L 340 180 L 460 180 L 460 300 L 300 300 L 300 180 L 70 180 Z"
+        fill="none" stroke="#14b8a6" stroke-width="2" stroke-dasharray="6 4" opacity="0.4"/>
+
+  <!-- Brand mark top-left -->
+  <text x="70" y="80" font-family="'JetBrains Mono', monospace" font-size="22"
+        font-weight="700" fill="#14b8a6" letter-spacing="4">RAWAL · DSS</text>
+
+  <!-- Main headline -->
+  <text x="70" y="300" font-family="'Inter', Arial, sans-serif" font-size="72"
+        font-weight="800" fill="#f1f5f9" letter-spacing="-2">Rawal Dam</text>
+  <text x="70" y="390" font-family="'Inter', Arial, sans-serif" font-size="72"
+        font-weight="800" fill="#f1f5f9" letter-spacing="-2">Decision Support</text>
+
+  <!-- Subtitle / descriptor -->
+  <text x="70" y="460" font-family="'Inter', Arial, sans-serif" font-size="28"
+        font-weight="400" fill="#94a3b8">
+    Satellite-based reservoir sustainability analysis
+  </text>
+  <text x="70" y="498" font-family="'Inter', Arial, sans-serif" font-size="28"
+        font-weight="400" fill="#94a3b8">
+    with CA-Markov forecasting and MCDA ranking
+  </text>
+
+  <!-- Stats row bottom -->
+  <g transform="translate(70, 555)">
+    <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="14"
+          font-weight="700" fill="#64748b" letter-spacing="2">1962 ORIGIN</text>
+    <text x="180" y="0" font-family="'JetBrains Mono', monospace" font-size="14"
+          font-weight="700" fill="#64748b" letter-spacing="2">· 2088 EOL</text>
+    <text x="320" y="0" font-family="'JetBrains Mono', monospace" font-size="14"
+          font-weight="700" fill="#64748b" letter-spacing="2">· 67,021 AC</text>
+    <text x="480" y="0" font-family="'JetBrains Mono', monospace" font-size="14"
+          font-weight="700" fill="#64748b" letter-spacing="2">· FYDP · NUST NICE</text>
+  </g>
+
+  <!-- Big accent circle on the right -->
+  <circle cx="1000" cy="315" r="180" fill="none" stroke="#14b8a6" stroke-width="3"
+          stroke-dasharray="8 6"/>
+  <circle cx="1000" cy="315" r="100" fill="none" stroke="#14b8a6" stroke-width="2" opacity="0.5"/>
+  <text x="1000" y="345" font-family="'JetBrains Mono', monospace" font-size="120"
+        font-weight="800" fill="#14b8a6" text-anchor="middle" letter-spacing="-4">R</text>
+</svg>
