@@ -3870,3 +3870,346 @@ html, body {
 [data-skeleton-host] {
     position: relative;
 }
+
+/* ============================================================
+    SENSITIVITY ANALYSIS PAGE (Phase 12)
+    ============================================================ */
+
+.sens-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+}
+
+.sens-header {
+    text-align: center;
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sens-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: var(--space-sm) 0;
+    line-height: 1.15;
+}
+
+.sens-lead {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    max-width: 780px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.sens-lead em {
+    color: var(--accent-teal);
+    font-style: italic;
+}
+
+.sens-section-head {
+    border-left: 3px solid var(--accent-teal);
+    padding-left: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.sens-h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-xs);
+}
+
+.sens-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.sens-hint em {
+    color: var(--text-primary);
+    font-style: italic;
+}
+
+/* ---------- CONTROLS ---------- */
+.sens-controls {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-lg);
+    align-items: stretch;
+}
+
+.sens-control-block {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+}
+
+.sens-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-sm);
+}
+
+.sens-control-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sens-control-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+}
+
+.sens-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    outline: none;
+    margin: var(--space-sm) 0;
+    cursor: pointer;
+}
+
+.sens-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    border: 2px solid var(--bg-secondary);
+    box-shadow: 0 0 0 1px var(--accent-teal);
+    cursor: pointer;
+}
+
+.sens-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    border: 2px solid var(--bg-secondary);
+    box-shadow: 0 0 0 1px var(--accent-teal);
+    cursor: pointer;
+}
+
+.sens-control-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-top: var(--space-sm);
+}
+
+.sens-baseline-card {
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-teal);
+    border-radius: 12px;
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-xs);
+}
+
+.sens-baseline-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sens-baseline-value {
+    font-family: var(--font-mono);
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: var(--accent-teal);
+    line-height: 1;
+}
+
+.sens-baseline-note {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* ---------- CHART ---------- */
+.sens-chart-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+}
+
+.sens-chart-wrapper {
+    position: relative;
+    height: 480px;
+    margin-top: var(--space-md);
+}
+
+/* ---------- TABLE ---------- */
+.sens-table-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg);
+}
+
+.sens-table-scroll {
+    overflow-x: auto;
+}
+
+.sens-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.sens-table thead th {
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.sens-table thead th.sens-swing-col {
+    color: var(--accent-teal);
+    text-align: right;
+}
+
+.sens-table tbody td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-color);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.sens-table tbody tr:first-child td {
+    background: linear-gradient(90deg, rgba(20,184,166,0.08), transparent);
+}
+
+.sens-param-cell {
+    font-family: var(--font-sans) !important;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sens-shift-cell {
+    font-weight: 600;
+}
+
+.sens-shift {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-left: 6px;
+}
+
+.sens-swing-cell {
+    text-align: right;
+    font-weight: 700;
+    color: var(--accent-teal);
+}
+
+/* ---------- COMMENTARY ---------- */
+.sens-commentary-card {
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: var(--space-lg) var(--space-xl);
+}
+
+.sens-commentary-card p {
+    color: var(--text-secondary);
+    font-size: 0.96rem;
+    line-height: 1.75;
+    margin-bottom: var(--space-md);
+}
+
+.sens-commentary-card p:last-child {
+    margin-bottom: 0;
+}
+
+.sens-commentary-card strong {
+    color: var(--accent-teal);
+}
+
+.sens-commentary-card a {
+    color: var(--accent-teal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ---------- METHODOLOGY NOTE ---------- */
+.sens-method-note {
+    margin-top: var(--space-lg);
+}
+
+.sens-note-box {
+    background: var(--bg-elevated);
+    border: 1px dashed var(--border-color);
+    border-radius: 10px;
+    padding: var(--space-lg);
+}
+
+.sens-note-title {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    margin-bottom: var(--space-sm);
+}
+
+.sens-note-box p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-sm);
+}
+
+.sens-note-box p:last-child {
+    margin-bottom: 0;
+}
+
+.sens-note-box a {
+    color: var(--accent-teal);
+    text-decoration: underline;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+    .sens-controls {
+        grid-template-columns: 1fr;
+    }
+    .sens-title { font-size: 1.9rem; }
+    .sens-chart-wrapper { height: 420px; }
+}
+
+@media (max-width: 600px) {
+    .sens-title { font-size: 1.5rem; }
+    .sens-chart-wrapper { height: 360px; }
+    .sens-baseline-value { font-size: 2.2rem; }
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitivity Analysis · Rawal DSS</title>
+    <meta name="description" content="Tornado-chart sensitivity analysis showing how each calibration constant in the Rawal Dam forecast shifts the projected end-of-life year.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- ===== Open Graph ===== -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rawal DSS">
+    <meta property="og:title" content="Sensitivity Analysis · Rawal DSS">
+    <meta property="og:description" content="Tornado-chart sensitivity analysis revealing which calibration constants drive the Rawal Dam forecast.">
+    <meta property="og:image" content="assets/icons/og-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Rawal Dam Decision Support System">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sensitivity Analysis · Rawal DSS">
+    <meta name="twitter:description" content="Which calibration constants drive the Rawal Dam forecast?">
+    <meta name="twitter:image" content="assets/icons/og-card.png">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="brand">
+            <span class="brand-mark">RAWAL</span>
+            <span class="brand-dss">DSS</span>
+        </div>
+        <nav class="top-nav">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="map.html" class="nav-link">Map</a>
+            <a href="simulator.html" class="nav-link">Simulator</a>
+            <a href="scenarios.html" class="nav-link">Scenarios</a>
+            <a href="sensitivity.html" class="nav-link">Sensitivity</a>
+            <a href="sensitivity.html" class="nav-link active">Sensitivity</a>
+            <a href="methodology.html" class="nav-link">Methodology</a>
+            <a href="downloads.html" class="nav-link">Downloads</a>
+            <a href="about.html" class="nav-link">About</a>
+        </nav>
+    </header>
+
+    <main class="sens-main">
+
+        <!-- ===== PAGE HEADER ===== -->
+        <section class="sens-header">
+            <p class="section-tag">ONE-AT-A-TIME SENSITIVITY ANALYSIS</p>
+            <h1 class="sens-title">Which calibration constant drives the forecast?</h1>
+            <p class="sens-lead">
+                Every forecast rests on a set of estimated parameters. A committee member
+                who trusts the model asks one question first: <em>which of those parameters
+                would, if slightly wrong, change the answer the most?</em> This tornado
+                chart answers that by varying each calibration constant one at a time by
+                &plusmn;20%, holding all others at their calibrated values, and recording the
+                shift in projected end-of-life year.
+            </p>
+        </section>
+
+        <!-- ===== CONTROLS ===== -->
+        <section class="sens-controls">
+            <div class="sens-control-block">
+                <div class="sens-control-header">
+                    <span class="sens-control-label">Variation range</span>
+                    <span class="sens-control-value" id="val-variation">&plusmn;20%</span>
+                </div>
+                <input type="range" class="sens-slider" id="slider-variation"
+                       min="5" max="40" step="5" value="20">
+                <p class="sens-control-desc">
+                    The fractional change applied to each parameter. Larger ranges produce
+                    bigger swings. The relative ranking of parameters typically stays
+                    stable across ranges &mdash; demonstrate this by dragging the slider.
+                </p>
+            </div>
+
+            <div class="sens-baseline-card">
+                <span class="sens-baseline-label">BASELINE EOL</span>
+                <span class="sens-baseline-value" id="baseline-eol">2088</span>
+                <span class="sens-baseline-note">Scenario A &middot; business-as-usual</span>
+            </div>
+        </section>
+
+        <!-- ===== TORNADO CHART ===== -->
+        <section class="sens-chart-section">
+            <div class="sens-section-head">
+                <h2 class="sens-h2">Tornado Chart</h2>
+                <p class="sens-hint">
+                    Orange bars extend left: the parameter's <em>lower</em> variant pulls
+                    EOL earlier. Teal bars extend right: the <em>upper</em> variant pushes
+                    EOL later. Longest total bar = most sensitive parameter. Parameters
+                    are re-sorted live by total swing.
+                </p>
+            </div>
+            <div class="sens-chart-wrapper">
+                <canvas id="tornado-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- ===== NUMERICAL TABLE ===== -->
+        <section class="sens-table-section">
+            <div class="sens-section-head">
+                <h2 class="sens-h2">Numerical Summary</h2>
+                <p class="sens-hint">
+                    Exact EOL-year shifts for the current variation range.
+                </p>
+            </div>
+            <div class="sens-table-scroll">
+                <table class="sens-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Baseline value</th>
+                            <th>Low variant</th>
+                            <th>Low EOL</th>
+                            <th>High variant</th>
+                            <th>High EOL</th>
+                            <th class="sens-swing-col">Total swing</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sens-tbody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== COMMENTARY ===== -->
+        <section class="sens-commentary">
+            <div class="sens-section-head">
+                <h2 class="sens-h2">What this tells us</h2>
+            </div>
+            <div class="sens-commentary-card" id="sens-commentary">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- ===== METHODOLOGY NOTE ===== -->
+        <section class="sens-method-note">
+            <div class="sens-note-box">
+                <h3 class="sens-note-title">Method</h3>
+                <p>
+                    Each parameter is perturbed independently (one-at-a-time, OAT).
+                    The remaining parameters are held at their calibrated values. The
+                    forward sediment-accounting loop from Engine 6 is re-run in
+                    JavaScript for each variant, using the same equations that power
+                    the interactive Simulator. The loop runs forward from 2024 until
+                    storage crosses the 5.3 MCM dead-storage threshold, and the year
+                    of that crossing is reported as the variant's EOL.
+                </p>
+                <p>
+                    OAT analysis is the standard first-line sensitivity method. It
+                    identifies dominant parameters cheaply and transparently. A full
+                    global sensitivity analysis (Sobol indices, Morris screening) would
+                    additionally quantify parameter interactions &mdash; a natural future
+                    extension listed on the <a href="about.html">About page</a>.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <span>Rawal DSS &middot; NUST Institute of Civil Engineering &middot; 2026</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="assets/js/data-loader.js"></script>
+    <script src="assets/js/sensitivity.js"></script>
+</body>
+</html>
